@@ -13,9 +13,9 @@
     $stm->execute([$ProductID]);
     $product = $stm->fetch();
 
-    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID = ?");
-    $stm->execute([$ProductID]);
-    $spec = $stm->fetch();
+    // $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID = ?");
+    // $stm->execute([$ProductID]);
+    // $spec = $stm->fetchAll();
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ProductName = $_POST['ProductName'];
@@ -43,7 +43,7 @@
         $stm->execute([$ProductName, $Category, $thumbName, $ProductID]);
     
         // Update specification table
-        $stm = $_db->prepare("UPDATE specification SET Specification = ?, Price = ?, Descr = ?, ProductPhoto = ? WHERE ProductID = ?");
+        $stm = $_db->prepare("UPDATE specification SET Specification = ?, Price = ?, Descr = ?, ProductPhoto = ? WHERE SpecID = ?");
         $stm->execute([$Specification, $Price, $Descr, $photoName, $ProductID]);
     
         echo "<script>alert('Product updated successfully'); window.location='admin.php';</script>";
@@ -76,9 +76,13 @@
                 <img src="../images/product/<?= $product['ProductThumb'] ?>" alt="Current Thumbnail">
             </label>
 
+            <?php foreach ($specifications as $s): ?>
+
             <label>Specification
                 <input type="text" name="Specification" value="<?= htmlspecialchars($spec['Specification']) ?>" required>
             </label>
+
+            
 
             <label>Price (RM)
                 <input type="number" name="Price" value="<?= htmlspecialchars($spec['Price']) ?>" step="0.01" required>
@@ -93,6 +97,7 @@
                 <img src="../images/product/<?= $spec['ProductPhoto'] ?>" alt="Current Product Photo">
             </label>
 
+            <?php endforeach; ?>
             <br>
             <button type="submit">Update Product</button>
             <button type="reset">Reset</button>
