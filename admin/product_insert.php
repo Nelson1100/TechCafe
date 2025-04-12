@@ -1,7 +1,6 @@
 <?php
 require '../base.php';
 include '../admin_head.php';
-
 ?>
 
 <!DOCTYPE html>
@@ -10,13 +9,11 @@ include '../admin_head.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin</title>
+    <title>Product | Insert</title>
 </head>
 
 <body>
-    <?php
-    include '../admin_foot.php';
-    ?>
+
 </body>
 
 </html>

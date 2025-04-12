@@ -7,12 +7,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sign Up Here.</title>
+        <title>Admin | Add Admin</title>
         <link rel="stylesheet" href="../css/app.css">
         <link rel="icon" type="image/x-icon" href="../images/TechCafe.png">
     </head>
     <body class="signBackground">
-    <a href="/pages/home.php"><img src="../images/back.png" alt="Back Button"></a>
+    <a href="/admin/admin.php"><img src="../images/back.png" alt="Back Button"></a>
         <main class="signPage">
         <h2>Sign Up</h2>
             <div class="loginForm">

@@ -1130,9 +1130,8 @@ select {
 #admin {
     padding-left: 50px;
     padding-right: 50px;
+    padding-bottom: 50px;
 }
-
-
 
 .product-table {
     border-collapse: collapse;

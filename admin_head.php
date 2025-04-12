@@ -15,16 +15,16 @@
         <div class="header-container" id="header">
             <div id="header-icons-left" class="header-icons">
                 <a href="/admin/admin.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
-                <h1>Admin Product Management</h1>
+                <h3 id="greeting">Welcome to the Admin Page</h3>
             </div>
             <div id="header-icons-right" class="header-icons">
-                <a href="login.php"><img src="/images/user.png" alt="User Profile"></a>
+                <a href="/admin/add_admin.php"><img src="/images/user.png" alt="User Profile"></a>
             </div>
 
             <nav id="navigationBar">
                 <ul>
-                    <li><a href="/admin/admin.php">Product</a></li>
-                    <li><a href="/admin/specification.php">Specification</a></li>
+                    <li><a href="/admin/admin.php">Home</a></li>
+                    <li><a href="/admin/product.php">Product</a></li>
                     <li><a href="/admin/user.php">User</a></li>
                     <li><a href="/admin/add_admin.php">Add Admin</a></li>
                 </ul>
