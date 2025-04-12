@@ -1124,3 +1124,48 @@ select {
     background-color: #444;
 }
 /* ----------------------------------------------------------------------------------- */
+
+/* ---------------------------- ADMIN SECTION ---------------------------------------- */
+
+#admin {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+
+
+.product-table {
+    border-collapse: collapse;
+}
+
+.product-table th, .product-table td {
+    border: 1px solid #000;
+    padding: 6px;
+}
+
+.product-table th {
+    color: #fff;
+    background: #666;
+}
+
+.product-table tr:hover td {
+    background: #ccc;
+}
+
+.product-table td:has(.popup) {
+    position: relative;
+}
+
+.product-table .popup {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    translate: 5px -50%;
+    z-index: 1;
+    border: 1px solid #333;
+    display: none;
+}
+
+.product-table tr:hover .popup {
+    display: block;
+}

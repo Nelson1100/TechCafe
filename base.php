@@ -1,5 +1,5 @@
 <?php
-// hello testing
+
 date_default_timezone_set('Asia/Kuala_Lumpur');
 session_start();
 
@@ -10,6 +10,21 @@ function is_get() {
 // Is POST request?
 function is_post() {
     return $_SERVER['REQUEST_METHOD'] == 'POST';
+}
+
+// Obtain REQUEST (GET and POST) parameter
+function req($key, $value = null)
+{
+    $value = $_REQUEST[$key] ?? $value;
+    return is_array($value) ? array_map('trim', $value) : trim($value);
+}
+
+// Redirect to URL
+function redirect($url = null)
+{
+    $url ??= $_SERVER['REQUEST_URI'];
+    header("Location: $url");
+    exit();
 }
 
 function is_unique($value, $table, $field) {
@@ -48,12 +63,18 @@ if (is_post()) {
 				window.location='/pages/login.php'</script>";
 		} else {
 			$_SESSION['UserFullName'] = $user['UserFullName'];
-			$username = $_SESSION['Username'] = $user['Username'];
+			$_SESSION['Username'] = $user['Username'];
 			$_SESSION['Email'] = $user['Email'];
 			$_SESSION['Role'] = $user['Roles'];
 			
-			echo "<script>alert('Welcome back! $username');
-			window.location='/pages/home.php'</script>";
+			$username = $user['Username'];
+			if ($user['Roles'] === 'Admin') {
+				echo "<script>alert('Welcome Admin! $username');
+				window.location='/admin/admin.php'</script>";
+			} else {
+				echo "<script>alert('Welcome back! $username');
+				window.location='/pages/home.php'</script>";
+			}
 		}
 		
 	} else if (isset($_POST['register'])) {
@@ -89,6 +110,7 @@ if (is_post()) {
 		$stm = $_db->prepare("SELECT ProductID, ProductName, Category, ProductThumb FROM product WHERE Category = ?");
 		$stm->execute([$category]);
 	}
+
 	$products = $stm->fetchAll();
 }
 
