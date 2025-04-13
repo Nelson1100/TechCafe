@@ -74,7 +74,7 @@
                                     ?>
                                 </div>
                                 <div id="addToCart" class="textbox">
-                                    <div style="display: flex;">
+                                    <div style="display: flex; align-items: center; justify-content: center;">
                                         <div class="qty-input">
                                             <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
                                             <input class="product-qty" type="number" name="product-qty" min="1" max="10" value="1">

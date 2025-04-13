@@ -18,12 +18,12 @@
 
                 <div id="header-icons-right" class="header-icons">
                     <div class="search" id="search-bar">
-                        <input class="search-txt" type="text" placeholder="Search">
+                        <input id="search" class="search-txt" type="text" placeholder="Search Product">
                         <button class="submit"><i class="fas fa-search"></i></button>
                     </div>
                     <a href="cart.php"><img src="/images/cart.png" alt="Cart"></a>
                     <a href="login.php"><img src="/images/user.png" alt="User Profile"></a>
-                </di>
+                </div>
 
                 <nav id="navigationBar">
                     <ul>

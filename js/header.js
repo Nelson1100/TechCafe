@@ -33,8 +33,29 @@ function debounce(func, wait) {
 window.onscroll = debounce(handleScroll, 0);
 
 // Search Bar
-var searchBox=document.getElementById("search-bar");
-        var Icon=document.getElementsByClassName("submit")[0];
-        Icon.onclick=function(){
-            searchBox.classList.toggle("active");
-        }
+const input = document.getElementById("search");
+const searchBox = document.getElementById("search-bar");
+const Icon = document.getElementsByClassName("submit")[0];
+
+// Function to trigger search
+function triggerSearch() {
+    const query = input.value.trim();
+    if (query !== "") {
+        window.location.href = "shop.php?ProductName=" + encodeURIComponent('%' + query + '%');
+    } else {
+        searchBox.classList.toggle("active");
+    }
+}
+
+// When search icon is clicked
+Icon.onclick = function () {
+    triggerSearch();
+};
+
+// When Enter key is pressed
+input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevent form submission if wrapped in a <form>
+        triggerSearch();
+    }
+});
