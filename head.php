@@ -22,7 +22,7 @@
                         <button class="submit"><i class="fas fa-search"></i></button>
                     </div>
                     <a href="cart.php"><img src="/images/cart.png" alt="Cart"></a>
-                    <a href="login.php"><img src="/images/user.png" alt="User Profile"></a>
+                    <a href="<?= isset($_SESSION['Email']) ? 'userProfile.php' : 'login.php' ?>"><img src="/images/user.png" alt="User Profile"></a>
                 </div>
 
                 <nav id="navigationBar">

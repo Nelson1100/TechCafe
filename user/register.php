@@ -11,9 +11,9 @@
         <link rel="stylesheet" href="../css/app.css">
         <link rel="icon" type="image/x-icon" href="../images/TechCafe.png">
     </head>
-    <body class="signBackground">
     <a href="/user/home.php"><img src="../images/back.png" alt="Back Button"></a>
-        <main class="signPage">
+    <main class="signPage">
+        <body class="signBackground">
         <h2>Sign Up</h2>
             <div class="loginForm">
                 <form method="POST" action="../base.php">	
@@ -43,6 +43,6 @@
                     Already have an account ?<a href="login.php"><b>&nbsp;&nbsp; Sign In</b></a>
                 </form>
             </div>
-        </main>
-    </body>
+        </body>
+    </main>
 </html>
