@@ -98,7 +98,7 @@ if (is_post()) {
             </section>
         </form>
     </main>
-    
+
     <?php
     include '../admin_foot.php';
     ?>
