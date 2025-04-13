@@ -21,9 +21,9 @@
                         <div class="footer-col">
                             <h4>company</h4>
                             <ul>
-                                <li><a href="/pages/about.php">about</a></li>
-                                <li><a href="/pages/services.php">services</a></li>
-                                <li><a href="/pages/login.php">login</a></li>
+                                <li><a href="/user/about.php">about</a></li>
+                                <li><a href="/user/services.php">services</a></li>
+                                <li><a href="/user/login.php">login</a></li>
                             </ul>
                         </div>
                         <div class="footer-col">

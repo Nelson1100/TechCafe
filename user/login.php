@@ -12,7 +12,7 @@
         <link rel="icon" type="image/x-icon" href="../images/TechCafe.png">
     </head>
     <body class="signBackground">
-    <a href="/pages/home.php"><img src="../images/back.png" alt="Back Button"></a>
+    <a href="/user/home.php"><img src="../images/back.png" alt="Back Button"></a>
         <main class="signPage">
         <h2>Sign In</h2>
             <div class="loginForm">

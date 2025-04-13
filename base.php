@@ -57,10 +57,10 @@ if (is_post()) {
 
 		if (!$user) {
 			echo "<script>alert('No user found. Please sign up.');
-			window.location='/pages/register.php'</script>";
+			window.location='/user/register.php'</script>";
 		} else if (($password != $user['Pass'])) {
 				echo "<script>alert('Wrong password. Please try again.');
-				window.location='/pages/login.php'</script>";
+				window.location='/user/login.php'</script>";
 		} else {
 			$_SESSION['UserFullName'] = $user['UserFullName'];
 			$_SESSION['Username'] = $user['Username'];
@@ -73,7 +73,7 @@ if (is_post()) {
 				window.location='/admin/admin.php'</script>";
 			} else {
 				echo "<script>alert('Welcome back! $username');
-				window.location='/pages/home.php'</script>";
+				window.location='/user/home.php'</script>";
 			}
 		}
 		
@@ -86,18 +86,18 @@ if (is_post()) {
 
 		if (!is_unique($fullname, 'user', 'UserFullName')) {
 			echo "<script>alert('Duplicated name is found! Please try to login.');
-			window.location='/pages/login.php'</script>";
+			window.location='/user/login.php'</script>";
 		} else if (!is_unique($email, 'user', 'Email')) {
 			echo "<script>alert('Duplicated email is found! Please try to login.');
-			window.location='/pages/login.php'</script>";
+			window.location='/user/login.php'</script>";
 		} else if (!is_unique($phonenumber, 'user', 'PhoneNo')) {
 			echo "<script>alert('Duplicated phone number is found! Please try to login.');
-			window.location='/pages/login.php'</script>";
+			window.location='/user/login.php'</script>";
 		} else {
 			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', '$password', 'User')");
 			$stm->execute();
 			echo "<script>alert('Welcome, $username! Your account has been created successfully.');
-			window.location='/pages/home.php'</script>";
+			window.location='/user/home.php'</script>";
 		}
 	}
 } else if (is_get()) {
