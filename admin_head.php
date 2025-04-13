@@ -1,3 +1,11 @@
+<?php
+// Restrict access to admins only
+if ($_SESSION['Role'] !== 'Admin') {
+    echo "<script>alert('Access denied. Admins only.'); window.location='/user/home.php'</script>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +19,9 @@
 </head>
 
 <body>
+    <!-- Flash message -->
+    <div id="info"><?= temp('info') ?></div>
+    
     <header>
         <div class="header-container" id="header">
             <div id="header-icons-left" class="header-icons">

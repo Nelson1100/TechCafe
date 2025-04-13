@@ -1130,13 +1130,19 @@ select {
 }
 /* ----------------------------------------------------------------------------------- */
 
+
+/* ----------------------------------------------------------------------------------- */
 /* ---------------------------- ADMIN SECTION ---------------------------------------- */
+/* ----------------------------------------------------------------------------------- */
 
 #admin {
     padding-left: 50px;
     padding-right: 50px;
     padding-bottom: 50px;
+    font-family: Lexend, sans-serif;
 }
+
+/* ---------------------------- PRODUCT TABLE ---------------------------------------- */
 
 .product-table {
     border-collapse: collapse;
@@ -1172,4 +1178,48 @@ select {
 
 .product-table tr:hover .popup {
     display: block;
+}
+/* ----------------------------------------------------------------------------------- */
+
+/* ---------------------------- FLASH MESSAGE ----------------------------------------- */
+
+#info {
+    position: fixed;
+    color: #fff;
+    background: #666;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 10px 20px;
+    left: 50%;
+    translate: -50% 0;
+    z-index: 9999;
+
+    top: -100px;
+    opacity: 0;
+}
+
+#info:not(:empty) {
+    animation: fade 5s;
+}
+
+@keyframes fade {
+      0% { top: -100px; opacity: 0; }
+     10% { top:  100px; opacity: 1; }
+     90% { top:  100px; opacity: 1; }
+    100% { top: -100px; opacity: 0; }
+}
+/* ----------------------------------------------------------------------------------- */
+
+/* ---------------------------- INSERT FORM ------------------------------------------ */
+.err {
+    color: red;
+}
+
+label.upload img {
+    display: block;
+    border: 1px solid #333;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    cursor: pointer;
 }

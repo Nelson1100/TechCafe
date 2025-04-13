@@ -1,6 +1,6 @@
 <?php
-    include '../base.php';
-    include '../admin_head.php';
+require '../base.php';
+include '../admin_head.php';
 
 if (is_post()) {
     $ProductID = req('ProductID');
@@ -16,6 +16,7 @@ if (is_post()) {
     // Delete record from DB
     $stm = $_db->prepare('DELETE FROM product WHERE ProductID = ?');
     $stm->execute([$ProductID]);
+    temp('info', 'Record deleted');
 }
 
-redirect('admin.php');
+redirect('product.php');
