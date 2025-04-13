@@ -403,6 +403,11 @@ footer .bottom-footer p {
     margin: 10px;
 }
 
+.cartButton {
+    margin-left: 50px;
+    width: 50%;
+}
+
 .button:hover, .cartButton:hover {
     background-color: #000;
     color: #fff;
@@ -566,7 +571,7 @@ box-shadow:
 
 .qty-input input,
 .qty-input button {
-    height: 2.5rem;
+    height: 2.7rem;
     font-weight: bold;
     font-size: 1rem;
     border: none;

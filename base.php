@@ -102,15 +102,24 @@ if (is_post()) {
 	}
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
+	$search = $_GET['ProductName'] ?? '';
 
-	if ($category == 'All') {
-		$stm = $_db->prepare("SELECT ProductID, ProductName, Category, ProductThumb FROM product");
-		$stm->execute();
-	} else {
-		$stm = $_db->prepare("SELECT ProductID, ProductName, Category, ProductThumb FROM product WHERE Category = ?");
-		$stm->execute([$category]);
+	// Base query
+	$sql = "SELECT ProductID, ProductName, Category, ProductThumb FROM product WHERE 1";
+	$params = [];
+
+	if ($category !== 'All') {
+		$sql .= " AND Category = ?";
+		$params[] = $category;
 	}
 
+	if (!empty($search)) {
+		$sql .= " AND ProductName LIKE ?";
+		$params[] = $search;
+	}
+
+	$stm = $_db->prepare($sql);
+	$stm->execute($params);
 	$products = $stm->fetchAll();
 }
 
