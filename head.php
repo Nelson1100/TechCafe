@@ -12,7 +12,7 @@
         <header>
             <div class="header-container" id="header">
                 <div id="header-icons-left" class="header-icons">
-                    <a href="/pages/home.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
+                    <a href="/user/home.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
                     <h3 id="greeting">Welcome to Tech Café</h3>
                 </div>
 
@@ -27,11 +27,11 @@
 
                 <nav id="navigationBar">
                     <ul>
-                        <li><a href="/pages/home.php">Home</a></li>
-                        <li><a href="/pages/shop.php">Shop</a></li>
-                        <li><a href="/pages/cafe.php">Cafe</a></li>
-                        <li><a href="/pages/services.php">Services</a></li>
-                        <li><a href="/pages/about.php">About</a></li>
+                        <li><a href="/user/home.php">Home</a></li>
+                        <li><a href="/user/shop.php">Shop</a></li>
+                        <li><a href="/user/cafe.php">Cafe</a></li>
+                        <li><a href="/user/services.php">Services</a></li>
+                        <li><a href="/user/about.php">About</a></li>
                     </ul>
                 </nav>
             </div>

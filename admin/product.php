@@ -29,7 +29,7 @@ include '../admin_head.php';
 
 // Restrict access to admins only
 if ($_SESSION['Role'] !== 'Admin') {
-    echo "<script>alert('Access denied. Admins only.'); window.location='/pages/home.php'</script>";
+    echo "<script>alert('Access denied. Admins only.'); window.location='/user/home.php'</script>";
     exit;
 }
 
