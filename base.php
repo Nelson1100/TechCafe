@@ -27,6 +27,45 @@ function redirect($url = null)
     exit();
 }
 
+// Set or get temporary session variable
+function temp($key, $value = null)
+{
+    if ($value !== null) {
+        $_SESSION["temp_$key"] = $value;
+    } else {
+        $value = $_SESSION["temp_$key"] ?? null;
+        unset($_SESSION["temp_$key"]);
+        return $value;
+    }
+}
+
+// Obtain uploaded file --> cast to object
+function get_file($key)
+{
+    $f = $_FILES[$key] ?? null;
+
+    if ($f && $f['error'] == 0) {
+        return (object)$f;
+    }
+
+    return null;
+}
+
+// Crop, resize and save photo
+function save_photo($f, $folder, $width = 200, $height = 200)
+{
+    $photo = uniqid() . '.jpg';
+
+    require_once 'lib/SimpleImage.php';
+    $img = new SimpleImage();
+    $img->fromFile($f->tmp_name)
+        ->thumbnail($width, $height)
+        ->toFile("$folder/$photo", 'image/jpeg');
+
+    return $photo;
+}
+
+// Is unique?
 function is_unique($value, $table, $field) {
     global $_db;
     $stm = $_db->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
@@ -176,4 +215,23 @@ function printProduct($products){
 
 	echo '</tr></table></div>'; // Close last row
 }
+
+// ============================================================================
+// Error Handlings
+// ============================================================================
+
+// Global error array
+$_err = [];
+
+// Generate <span class='err'>
+function err($key)
+{
+    global $_err;
+    if ($_err[$key] ?? false) {
+        echo "<span class='err'>$_err[$key]</span>";
+    } else {
+        echo '<span></span>';
+    }
+}
 ?>
+
