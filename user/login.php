@@ -11,9 +11,9 @@
         <link rel="stylesheet" href="../css/app.css">
         <link rel="icon" type="image/x-icon" href="../images/TechCafe.png">
     </head>
-    <body class="signBackground">
     <a href="/user/home.php"><img src="../images/back.png" alt="Back Button"></a>
-        <main class="signPage">
+    <main class="signPage">
+        <body class="signBackground">
         <h2>Sign In</h2>
             <div class="loginForm">
                 <form method="POST" action="../base.php">	
@@ -28,9 +28,9 @@
                     <div>
                         <button name="login" type="submit" class="button">Sign In</button>
                     </div><br>
-                Don't have an account ?<a href="register.php"><b>&nbsp;&nbsp; Register</b></a>
+                    Don't have an account ?<a href="register.php"><b>&nbsp;&nbsp; Register</b></a>
                 </form>
             </div>
-        </main>
-    </body>
+        </body>
+    </main>
 </html>

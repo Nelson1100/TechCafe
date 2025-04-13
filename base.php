@@ -66,7 +66,7 @@ if (is_post()) {
 			$_SESSION['Username'] = $user['Username'];
 			$_SESSION['Email'] = $user['Email'];
 			$_SESSION['Role'] = $user['Roles'];
-			
+
 			$username = $user['Username'];
 			if ($user['Roles'] === 'Admin') {
 				echo "<script>alert('Welcome Admin! $username');
@@ -96,9 +96,14 @@ if (is_post()) {
 		} else {
 			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', '$password', 'User')");
 			$stm->execute();
+			$_SESSION['Email'] = $email;
 			echo "<script>alert('Welcome, $username! Your account has been created successfully.');
 			window.location='/user/home.php'</script>";
 		}
+	} else if (isset($_POST['logout'])){
+		session_destroy();
+		header("Location: user/home.php");
+		exit();
 	}
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
