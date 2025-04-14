@@ -7,6 +7,17 @@ $search = $_GET['search'] ?? '';
 $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ?");
 $stm->execute(["%$search%"]);
 $products = $stm->fetchAll();
+
+// // Get specifications for all products at once
+// $stm = $_db->prepare("SELECT * FROM specifcation WHERE ProductID IN (SELECT ProductID FROM product where ProductName LIKE ?");
+// $stm->execute(["%$search%"]);
+// $all_specs = $stm->fetchAll();
+
+// // Organize specifications by ProductID
+// $specs_by_product = [];
+// foreach ($all_specs as $spec) {
+//     $specs_by_product[$spec['ProductID']][] = $spec;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -34,13 +45,17 @@ $products = $stm->fetchAll();
         <!-- Product List -->
         <table class="admin-table">
             <tr>
+                <th width="20px"></th>
                 <th>ProductID</th>
                 <th>ProductName</th>
                 <th>Category</th>
                 <th>Actions</th>
             </tr>
             <?php foreach ($products as $p): ?>
-                <tr>
+                <tr class="product-row" data-product-id="<?= $p['ProductID'] ?>">
+                    <td>
+                        <span class="toggle-arrow" onclick="toggleSpecs('<?= $p['ProductID'] ?>')">&#9658</span>
+                    </td>
                     <td><?= $p['ProductID'] ?></td>
                     <td><?= $p['ProductName'] ?></td>
                     <td><?= $p['Category'] ?></td>
@@ -50,6 +65,8 @@ $products = $stm->fetchAll();
                         <img src="/images/product/<?= htmlspecialchars($p['ProductThumb']) ?>" alt="Thumbnail" class="popup" width="150">
                     </td>
                 </tr>
+                <!-- Specifications container -->
+                
             <?php endforeach; ?>
         </table>
     </main>
