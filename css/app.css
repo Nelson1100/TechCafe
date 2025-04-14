@@ -1141,31 +1141,38 @@ select {
     font-family: Lexend, sans-serif;
 }
 
-/* ---------------------------- PRODUCT TABLE ---------------------------------------- */
+/* ---------------------------- ADMIN TABLE ---------------------------------------- */
+.admin-search {
+    padding-bottom: 20px;
+}
 
-.product-table {
+.admin-search input{
+    width: 400px;
+}
+
+.admin-table {
     border-collapse: collapse;
 }
 
-.product-table th, .product-table td {
+.admin-table th, .admin-table td {
     border: 1px solid #000;
     padding: 6px;
 }
 
-.product-table th {
+.admin-table th {
     color: #fff;
     background: #666;
 }
 
-.product-table tr:hover td {
+.admin-table tr:hover td {
     background: #ccc;
 }
 
-.product-table td:has(.popup) {
+.admin-table td:has(.popup) {
     position: relative;
 }
 
-.product-table .popup {
+.admin-table .popup {
     position: absolute;
     top: 50%;
     left: 100%;
@@ -1175,7 +1182,7 @@ select {
     display: none;
 }
 
-.product-table tr:hover .popup {
+.admin-table tr:hover .popup {
     display: block;
 }
 /* ----------------------------------------------------------------------------------- */
@@ -1213,11 +1220,28 @@ select {
     color: red;
 }
 
-label.upload img {
+.upload img {
     display: block;
     border: 1px solid #333;
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     cursor: pointer;
+    padding: 5px;
+}
+
+.product-form {
+    display: grid;
+    grid: auto / auto auto auto;
+    gap: 5px;
+    place-content: start;
+    /* place-items: center start; */
+}
+
+.product-form label{
+    text-align: left;
+} 
+
+.product-form input {
+    width: 250px;
 }

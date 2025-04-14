@@ -25,12 +25,12 @@ if (is_post()) {
     }
 
     // Category Validation
+    $valid_categories = ['Computer', 'Accessories', 'Keyboard'];
+
     if ($Category == '') {
         $_err['Category'] = 'Required';
-    } else if (strlen($Category) > 50) {
-        $_err['Category'] = 'Maximum 50 characters';
-    } else if (!($Category == 'Computer' || $Category == 'Accessories' || $Category == 'Keyboard')) {
-        $_err['Category'] = 'Only "Computer", "Accessories" or "Keyboard"';
+    } else if (!in_array($Category, $valid_categories)) {
+        $_err['Category'] = 'Invalid category selected';
     }
 
     // ProductThumb Validation
@@ -76,13 +76,18 @@ if (is_post()) {
             <label for="ProductID">ProductID</label>
             <input type="text" id="ProductID" name="ProductID" maxlength="4" placeholder="P999" data-upper>
             <?= err('ProductID') ?>
-
+            
             <label for="ProductName">ProductName</label>
             <input type="text" id="ProductName" name="ProductName" maxlength="100">
             <?= err('ProductName') ?>
-
+            
             <label for="Category">Category</label>
-            <input type="text" id="Category" name="Category" maxlength="50">
+            <select id="Category" name="Category">
+                <option value="">- Select One -</option>
+                <option value="Computer">Computer</option>
+                <option value="Keyboard">Keyboard</option>
+                <option value="Accessories">Accessories</option>
+            </select>
             <?= err('Category') ?>
 
             <label for="ProductThumb">ProductThumb</label>
