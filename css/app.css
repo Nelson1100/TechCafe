@@ -322,6 +322,17 @@ footer .bottom-footer p {
 /* ----------------------------------------------------------------------------------- */
 
 /* ----------------------------- LOGIN AND SIGNUP PAGE ------------------------------- */
+.profile-upload img {
+    border-radius: 50%;  
+}
+
+.profile-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* Center horizontally */
+    justify-content: center; /* Center vertically */
+}
+
 .signBackground {
     background-image: url('../images/background.jpg');
     background-size: 101%;
