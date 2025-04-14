@@ -26,13 +26,13 @@ $products = $stm->fetchAll();
             <button data-get="product_insert.php">Insert</button>
         </p>
         <!-- Search Bar -->
-        <form method="get">
+        <form method="get" class="admin-search">
             <input type="text" name="search" placeholder="Search product..." value="<?= htmlspecialchars($search) ?>">
             <button type="submit">Search</button>
         </form>
 
         <!-- Product List -->
-        <table class="product-table">
+        <table class="admin-table">
             <tr>
                 <th>ProductID</th>
                 <th>ProductName</th>
@@ -45,7 +45,7 @@ $products = $stm->fetchAll();
                     <td><?= $p['ProductName'] ?></td>
                     <td><?= $p['Category'] ?></td>
                     <td>
-                        <button data-get="product_update.php?ProductID=<?= $p['ProductID'] ?>">Edit</button>
+                        <button data-get="product_update.php?ProductID=<?= $p['ProductID'] ?>">Update</button>
                         <button data-confirm="Confirm Delete Record?" data-post="product_delete.php?ProductID=<?= $p['ProductID'] ?>">Delete</button>
                         <img src="/images/product/<?= htmlspecialchars($p['ProductThumb']) ?>" alt="Thumbnail" class="popup" width="150">
                     </td>
