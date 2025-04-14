@@ -115,7 +115,6 @@ if (is_post()) {
 				window.location='/user/home.php'</script>";
 			}
 		}
-		
 	} else if (isset($_POST['register'])) {
 		$fullname = $_POST['fullname'];
 		$username = $_POST['username'];
@@ -143,7 +142,28 @@ if (is_post()) {
 		session_destroy();
 		header("Location: user/home.php");
 		exit();
-	}
+	} else if (isset($_POST['updateProfile'])) {
+		$profilePic = $_FILES['updateProfile'];
+	
+		// Generate a unique filename
+		$filename = uniqid() . "_" . basename($profilePic['name']);
+		$targetDir = 'images/profilePic/';
+		$targetFile = $targetDir . $filename;
+	
+		// Save file to server
+		if (move_uploaded_file($profilePic['tmp_name'], $targetFile)) {
+			$photo = 'profilePic/' . $filename;
+	
+			// Update DB
+			$stm = $_db->prepare("UPDATE user SET ProfilePic = ? WHERE Email = ?");
+			$stm->execute([$photo, $_SESSION['Email']]);
+			echo "<script>alert('You had successfully changed your profile picture.');
+			window.location='/user/userProfile.php'</script>";
+		} else {
+			echo "<script>alert('Failed to upload image.');
+			window.location='/user/userProfile.php'</script>";
+		}
+	}	
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
 	$search = $_GET['ProductName'] ?? '';
