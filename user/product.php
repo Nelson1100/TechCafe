@@ -13,23 +13,6 @@
         $stm = $_db->prepare("SELECT ProductID, ProductName, Category, ProductThumb FROM product WHERE ProductID = ?");
         $stm->execute([$ProductID]);
         $product = $stm->fetch();
-
-        // Handle Add to Cart       
-        if (is_post()) {
-            $cart_item = [
-                "specificationName" => $specification["specificationName"],
-                "Price" => $specification["Price"],
-                "specificationPhoto" => $specification["specificationPhoto"]
-            ];
-            
-            if (!isset($_SESSION['cart'])) {
-                $_SESSION['cart'] = [];
-            }
-
-            $_SESSION['cart'][] = $cart_item;
-            header("Location: cart.php"); // Redirect to cart page after adding
-            exit;
-        }
     ?>
 
     <main>
@@ -73,16 +56,17 @@
                                         </div>';
                                     ?>
                                 </div>
-                                <div id="addToCart" class="textbox">
+                                <form id="addToCart" class="textbox" method="POST">
+                                    <input type="hidden" name="selectedSpecID" id="selectedSpecID">
                                     <div style="display: flex; align-items: center; justify-content: center;">
                                         <div class="qty-input">
                                             <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
                                             <input class="product-qty" type="number" name="product-qty" min="1" max="10" value="1">
                                             <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
                                         </div>
-                                        <button class="cartButton">Add to Cart</button>
+                                        <button type="submit" class="cartButton" name="addCart">Add to Cart</button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -92,7 +76,14 @@
             <?php
                 include '../foot.php'; 
             ?>
-            
+
+            <script>
+                document.querySelectorAll('.spec-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        document.getElementById('selectedSpecID').value = this.dataset.id;
+                    });
+                });
+            </script>
         </body>
     </main>
 </html>

@@ -40,7 +40,7 @@
 	</style>
 </head>
 <a href="/user/home.php"><img src="../images/back.png" alt="Back Button"></a>
-	<main class="signPage">
+	<main class="signPage" style="width: 450px;">
 		<body class="signBackground">
 			<?php
 				$address = isset($user['Address']) && $user['Address'] !== null && $user['Address'] !== "" ? $user['Address'] : "-";
