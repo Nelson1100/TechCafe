@@ -143,27 +143,56 @@ if (is_post()) {
 		header("Location: user/home.php");
 		exit();
 	} else if (isset($_POST['updateProfile'])) {
-		$profilePic = $_FILES['updateProfile'];
-	
-		// Generate a unique filename
-		$filename = uniqid() . "_" . basename($profilePic['name']);
-		$targetDir = 'images/profilePic/';
-		$targetFile = $targetDir . $filename;
-	
-		// Save file to server
-		if (move_uploaded_file($profilePic['tmp_name'], $targetFile)) {
-			$photo = 'profilePic/' . $filename;
-	
+			// Get new values from form
+			$new_fullname   = isset($_POST['UserFullName']) ? trim($_POST['UserFullName']) : '';
+			$new_email      = isset($_POST['Email']) ? trim($_POST['Email']) : '';
+			$new_username   = isset($_POST['Username']) ? trim($_POST['Username']) : '';
+			$new_phone      = isset($_POST['PhoneNo']) ? trim($_POST['PhoneNo']) : '';
+			$new_address    = isset($_POST['Address']) ? trim($_POST['Address']) : '';
+
+			echo "<script>alert('$new_username')</script>";
+			// Fetch current user data from database
+			$stmt = $_db->prepare("SELECT * FROM user WHERE Email = ?");
+			$stmt->execute([$_SESSION['Email']]);
+			$currentUser = $stmt->fetch();
+		
+			// Use current values if input is empty
+			$fullname   = $new_fullname ?: $currentUser['UserFullName'];
+			$email      = $new_email ?: $currentUser['Email'];
+			$username   = $new_username ?: $currentUser['Username'];
+			$phone      = $new_phone ?: $currentUser['PhoneNo'];
+			$address    = $new_address ?: $currentUser['Address'];
+		
 			// Update DB
-			$stm = $_db->prepare("UPDATE user SET ProfilePic = ? WHERE Email = ?");
-			$stm->execute([$photo, $_SESSION['Email']]);
-			echo "<script>alert('You had successfully changed your profile picture.');
-			window.location='/user/userProfile.php'</script>";
-		} else {
-			echo "<script>alert('Failed to upload image.');
-			window.location='/user/userProfile.php'</script>";
-		}
-	}	
+			$stm = $_db->prepare("UPDATE user SET UserFullName=?, Email=?, Username=?, PhoneNo=?, Address=? WHERE Email=?");
+			$stm->execute([$fullname, $email, $username, $phone, $address, $_SESSION['Email']]);
+		
+			// Optional: Update session if email is changed
+			$_SESSION['Email'] = $email;
+		
+			echo "<script>alert('Profile updated successfully.'); window.location.href='user/userProfile.php';</script>";
+		
+		if ($profilePic) {
+			// Generate a unique filename
+			$filename = uniqid() . "_" . basename($profilePic['name']);
+			$targetDir = 'images/profilePic/';
+			$targetFile = $targetDir . $filename;
+		
+			// Save file to server
+			if (move_uploaded_file($profilePic['tmp_name'], $targetFile)) {
+				$photo = 'profilePic/' . $filename;
+		
+				// Update DB
+				$stm = $_db->prepare("UPDATE user SET ProfilePic = ? WHERE Email = ?");
+				$stm->execute([$photo, $_SESSION['Email']]);
+				echo "<script>alert('You had successfully changed your profile picture.');
+				window.location='/user/userProfile.php'</script>";
+			} else {
+				echo "<script>alert('Failed to upload image.');
+				window.location='/user/userProfile.php'</script>";
+			}
+		}	
+	}
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
 	$search = $_GET['ProductName'] ?? '';
