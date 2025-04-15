@@ -6,7 +6,7 @@ if (is_post()) {
     $ProductID = req('ProductID');
     $ProductName = req('ProductName');
     $Category = req('Category');
-    $ProductThumb = get_file('ProductThumb');
+    $f = get_file('ProductThumb');
 
     // ProductID Validation
     if ($ProductID == '') {
@@ -34,11 +34,11 @@ if (is_post()) {
     }
 
     // ProductThumb Validation
-    if (!$ProductThumb) {
+    if (!$f) {
         $_err['ProductThumb'] = 'Required';
-    } else if (!str_starts_with($ProductThumb->type, 'image/')) {
+    } else if (!str_starts_with($f->type, 'image/')) {
         $_err['ProductThumb'] = 'Must be image';
-    } else if ($ProductThumb->size > 1 * 1024 * 1024) {
+    } else if ($f->size > 1 * 1024 * 1024) {
         $_err['ProductThumb'] = 'Maximum 1MB';
     }
 
@@ -46,7 +46,7 @@ if (is_post()) {
     // save photo then continue with DB operation
     if (!$_err) {
         // Save photo
-        $photo = save_photo($ProductThumb, '../images/product');
+        $photo = save_photo($f, '../images/product');
 
         $stm = $_db->prepare('
             INSERT INTO product (ProductID, ProductName, Category, ProductThumb)
@@ -70,17 +70,17 @@ if (is_post()) {
 </head>
 
 <body>
-    <main id="admin">
+    <main class="admin">
         <h1>Product | Insert</h1>
-        <form method="post" class="product-form" enctype="multipart/form-data">
+        <form method="post" class="product-form" enctype="multipart/form-data" novalidate>
             <label for="ProductID">ProductID</label>
             <input type="text" id="ProductID" name="ProductID" maxlength="4" placeholder="P999" data-upper>
             <?= err('ProductID') ?>
-            
+
             <label for="ProductName">ProductName</label>
             <input type="text" id="ProductName" name="ProductName" maxlength="100">
             <?= err('ProductName') ?>
-            
+
             <label for="Category">Category</label>
             <select id="Category" name="Category">
                 <option value="">- Select One -</option>
@@ -93,7 +93,7 @@ if (is_post()) {
             <label for="ProductThumb">ProductThumb</label>
             <label class="upload" tabindex="0">
                 <input type="file" id="ProductThumb" name="ProductThumb" accept="image/*" hidden>
-                <img src="../images/photo.jpg" alt="photo">
+                <img src="../images/photo.jpg" alt="Photo">
             </label>
             <?= err('ProductThumb') ?>
 
