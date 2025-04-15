@@ -192,6 +192,28 @@ if (is_post()) {
 				window.location='/user/userProfile.php'</script>";
 			}
 		}	
+	} else if (isset($_POST['addCart'])) {
+		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ?");
+		$stm->execute([$_SESSION['Email']]);
+		$cartItems = $stm->fetch();
+
+		$specID = $_POST['selectedSpecID'];
+		$quantity = $_POST['product-qty'];
+		
+		
+		if (!$cartItems) {		// For creating cart for first purchase user
+			$stm = $_db->prepare("INSERT INTO cart (Email, ItemsAdded, Quantity, OrderStatus) VALUES (?, ?, ?, ?)");
+			$stm->execute([$_SESSION['Email'], $specID, $quantity, 'InCart']);
+			echo "<script>alert('Successfully Added');
+			window.location='/user/cart.php'</script>";
+		} else {
+			$currentItemAdded = $cartItems['ItemsAdded'];
+			$currentQuantity = $cartItems['Quantity'];
+			$stm = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
+			$stm->execute([$currentItemAdded.",".$specID, $currentQuantity.",".$quantity, $_SESSION['Email']]);
+			echo "<script>alert('Successfully Added');
+			window.location='/user/cart.php'</script>";
+		}
 	}
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
@@ -288,4 +310,3 @@ function err($key)
     }
 }
 ?>
-
