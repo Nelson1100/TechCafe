@@ -1174,7 +1174,7 @@ select {
     font-family: Lexend, sans-serif;
 }
 
-/* ---------------------------- ADMIN TABLE ---------------------------------------- */
+/* ---------------------------- ADMIN TABLE ------------------------------------------ */
 .admin-search {
     padding-bottom: 20px;
 }
@@ -1220,7 +1220,50 @@ select {
 }
 /* ----------------------------------------------------------------------------------- */
 
-/* ---------------------------- FLASH MESSAGE ----------------------------------------- */
+/* ---------------------------- SPECIFICATION TABLE ---------------------------------- */
+.toggle-arrow {
+    cursor: pointer;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    font-weight: bold;
+    transition: transform 0.3s;
+}
+.arrow-down {
+    transform: rotate(90deg);
+}
+.spec-container {
+    display: block;
+    padding: 15px;
+    background: #f8f8f8;
+    border-left: 3px solid #ccc;
+}
+.spec-row {
+    display: none;
+}
+.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.spec-table tr:hover td {
+    background: #e0e0e0;
+}
+.spec-table th, .spec-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.spec-table th {
+    background-color: #f0f0f0;
+}
+.popup-photo {
+    max-width: 150px;
+    cursor: pointer;
+}
+/* ----------------------------------------------------------------------------------- */
+
+/* ---------------------------- FLASH MESSAGE ---------------------------------------- */
 #info {
     position: fixed;
     color: #fff;
@@ -1278,3 +1321,4 @@ select {
 .product-form input {
     width: 250px;
 }
+/* ----------------------------------------------------------------------------------- */
