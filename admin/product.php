@@ -30,7 +30,7 @@ foreach ($all_specs as $spec) {
 </head>
 
 <body>
-    <main id="admin">
+    <main class="admin">
         <h1>Admin | Product</h1>
 
         <p>
@@ -75,7 +75,7 @@ foreach ($all_specs as $spec) {
                                     <tr>
                                         <th>SpecID</th>
                                         <th>Specification</th>
-                                        <th>Price</th>
+                                        <th>Price (RM)</th>
                                         <th>Description</th>
                                         <th>Actions</th>
                                     </tr>
@@ -86,8 +86,8 @@ foreach ($all_specs as $spec) {
                                             <td><?= number_format($spec['Price'], 2) ?></td>
                                             <td><?= substr($spec['Descr'], 0, 50) ?><?= strlen($spec['Descr']) > 50 ? '...' : '' ?></td>
                                             <td>
-                                                <button data-get="spec_update.php?SpecID<?= $spec['SpecID'] ?>">Update</button>
-                                                <button data-confirm="Confirm Delete Specification?" data-post="spec_delete.php?SpecID<?= $spec['SpecID'] ?>">Delete</button>
+                                                <button data-get="spec_update.php?SpecID=<?= $spec['SpecID'] ?>">Update</button>
+                                                <button data-confirm="Confirm Delete Specification?" data-post="spec_delete.php?SpecID=<?= $spec['SpecID'] ?>">Delete</button>
                                                 <img src="../images/product/<?= htmlspecialchars($spec['ProductPhoto']) ?>" alt="Product Photo" class="popup-photo popup">
                                             </td>
                                         </tr>

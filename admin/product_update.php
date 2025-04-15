@@ -2,46 +2,94 @@
 require '../base.php';
 include '../admin_head.php';
 
-// Get current product data
-$stm = $_db->prepare("SELECT * FROM product WHERE ProductID = ?");
-$stm->execute([$ProductID]);
-$product = $stm->fetch();
+$default_photo = 'photo.jpg';
 
-// $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID = ?");
-// $stm->execute([$ProductID]);
-// $spec = $stm->fetchAll();
+if (is_get()) {
+    $ProductID = req('ProductID');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $ProductName = $_POST['ProductName'];
-    $Category = $_POST['Category'];
-    $Specification = $_POST['Specification'];
-    $Price = $_POST['Price'];
-    $Descr = $_POST['Descr'];
+    $stm = $_db->prepare('SELECT * FROM product WHERE ProductID = ?');
+    $stm->execute([$ProductID]);
+    $p = $stm->fetch();
 
-    // Handle file upload for ProductThumb
-    $thumbName = $product['ProductThumb'];
-    if (!empty($_FILES['ProductThumb']['name'])) {
-        $thumbName = uniqid() . '_' . $_FILES['ProductThumb']['name'];
-        move_uploaded_file($_FILES['ProductThumb']['tmp_name'], "../images/product/" . $thumbName);
+    if (!$p) {
+        redirect('product.php');
     }
 
-    // Handle file upload for ProductPhoto
-    $photoName = $spec['ProductPhoto'];
-    if (!empty($_FILES['ProductPhoto']['name'])) {
-        $photoName = uniqid() . '_' . $_FILES['ProductPhoto']['name'];
-        move_uploaded_file($_FILES['ProductPhoto']['tmp_name'], "../images/product/" . $photoName);
+    extract((array)$p);
+    // store product photo into session
+    $_SESSION['ProductThumb'] = $ProductThumb ?? $default_photo;
+    $photo = $ProductThumb ?? $default_photo;
+}
+
+if (is_post()) {
+    $ProductID = req('ProductID');
+    $ProductName = req('ProductName');
+    $Category = req('Category');
+    $f = get_file('ProductThumb');  // when the user choose a NEW photo
+    $photo = $_SESSION['ProductThumb'] ?? $default_photo;  // user use back existing photo
+
+    // ProductID Validation
+    if ($ProductID == '') {
+        $_err['ProductID'] = 'Required';
+    } else if (!preg_match('/^P\d{3}$/', $ProductID)) {
+        $_err['ProductID'] = 'Invalid format';
+    } else if (!is_unique($ProductID, 'product', 'ProductID')) {
+        $_err['ProductID'] = 'Duplicated';
     }
 
-    // Update product table
-    $stm = $_db->prepare("UPDATE product SET ProductName = ?, Category = ?, ProductThumb = ? WHERE ProductID = ?");
-    $stm->execute([$ProductName, $Category, $thumbName, $ProductID]);
+    // ProductName Validation
+    if ($ProductName == '') {
+        $_err['ProductName'] = 'Required';
+    } else if (strlen($ProductName) > 100) {
+        $_err['ProductName'] = 'Maximum 100 characters';
+    }
 
-    // Update specification table
-    $stm = $_db->prepare("UPDATE specification SET Specification = ?, Price = ?, Descr = ?, ProductPhoto = ? WHERE SpecID = ?");
-    $stm->execute([$Specification, $Price, $Descr, $photoName, $ProductID]);
+    // Category Validation
+    $valid_categories = ['Computer', 'Accessories', 'Keyboard'];
 
-    echo "<script>alert('Product updated successfully'); window.location='admin.php';</script>";
-    exit;
+    if ($Category == '') {
+        $_err['Category'] = 'Required';
+    } else if (!in_array($Category, $valid_categories)) {
+        $_err['Category'] = 'Invalid category selected';
+    }
+
+    // ProductThumb Validation
+    // ** Only if a file is selected **
+    if ($f) {
+        if (!str_starts_with($f->type, 'image/')) {
+            $_err['ProductThumb'] = 'Must be image';
+        } else if ($f->size > 1 * 1024 * 1024) {
+            $_err['ProductThumb'] = 'Maximum 1MB';
+        }
+    }
+
+    // DB operation
+    // save photo then continue with DB operation
+    if (!$_err) {
+        // Delete photo + save photo
+        if ($f) {
+            // new photo selected
+            if ($photo != $default_photo) {
+                // Only delete if it's not the default photo
+                unlink("../images/product/$photo");
+            }
+            $photo = save_photo($f, '../images/product');
+        }
+
+        $stm = $_db->prepare('
+            UPDATE product
+            SET ProductName = ?, Category = ?, ProductThumb = ?
+            WHERE ProductID = ?
+        ');
+        $stm->execute([$ProductName, $Category, $photo, $ProductID]);
+
+        temp('info', 'Record inserted');
+        redirect('product.php');
+    }
+
+    if (!isset($photo)) {
+        $photo = $_SESSION['ProductThumb'] ?? $default_photo;
+    }
 }
 ?>
 
@@ -51,55 +99,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product | Edit</title>
+    <title>Product | Update</title>
 </head>
 
 <body>
-    <main>
-        <h2>Edit Product</h2>
-
-        <form method="post" enctype="multipart/form-data">
-            <label>Product Name
-                <input type="text" name="ProductName" value="<?= htmlspecialchars($product['ProductName']) ?>" required>
-            </label>
-
-            <label>Category
-                <input type="text" name="Category" value="<?= htmlspecialchars($product['Category']) ?>" required>
-            </label>
-
-            <label>Product Thumb
-                <input type="file" name="ProductThumb" accept="image/*">
-                <img src="../images/product/<?= $product['ProductThumb'] ?>" alt="Current Thumbnail">
-            </label>
-
-            <?php foreach ($specifications as $s): ?>
-
-                <label>Specification
-                    <input type="text" name="Specification" value="<?= htmlspecialchars($spec['Specification']) ?>" required>
-                </label>
-
-
-
-                <label>Price (RM)
-                    <input type="number" name="Price" value="<?= htmlspecialchars($spec['Price']) ?>" step="0.01" required>
-                </label>
-
-                <label>Description
-                    <textarea name="Descr" rows="5"><?= htmlspecialchars($spec['Descr']) ?></textarea>
-                </label>
-
-                <label>Product Photo
-                    <input type="file" name="ProductPhoto" accept="image/*">
-                    <img src="../images/product/<?= $spec['ProductPhoto'] ?>" alt="Current Product Photo">
-                </label>
-
-            <?php endforeach; ?>
+    <main class="admin">
+        <h1>Product | Update</h1>
+        <form method="post" class="product-form" enctype="multipart/form-data" novalidate>
+            <label for="ProductID">ProductID</label>
+            <b><?= $ProductID ?></b>
             <br>
-            <button type="submit">Update Product</button>
-            <button type="reset">Reset</button>
-            <a href="admin.php"><button type="button">Cancel</button></a>
+
+            <label for="ProductName">ProductName</label>
+            <input type="text" id="ProductName" name="ProductName" value='<?= htmlentities($ProductName) ?>' maxlength="100">
+            <?= err('ProductName') ?>
+
+            <label for="Category">Category</label>
+            <select id="Category" name="Category">
+                <option value="">- Select One -</option>
+                <option value="Computer" <?= $Category == 'Computer' ? 'selected' : '' ?>>Computer</option>
+                <option value="Keyboard" <?= $Category == 'Keyboard' ? 'selected' : '' ?>>Keyboard</option>
+                <option value="Accessories" <?= $Category == 'Accessories' ? 'selected' : '' ?>>Accessories</option>
+            </select>
+            <?= err('Category') ?>
+
+            <label for="ProductThumb">ProductThumb</label>
+            <label class="upload" tabindex="0">
+                <input type="file" id="ProductThumb" name="ProductThumb" accept="image/*" hidden>
+                <img src="../images/product/<?= htmlentities($photo) ?>" alt="Current Photo" onerror="this.src='../images/photo.jpg'">
+            </label>
+            <?= err('ProductThumb') ?>
+
+            <section>
+                <button>Submit</button>
+                <button type="reset">Reset</button>
+            </section>
         </form>
     </main>
+
     <?php
     include '../admin_foot.php';
     ?>

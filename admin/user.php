@@ -9,8 +9,6 @@ $stm->execute(["%$search%"]);
 $users = $stm->fetchAll();
 ?>
 
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,7 +19,7 @@ $users = $stm->fetchAll();
 </head>
 
 <body>
-    <main id="admin">
+    <main class="admin">
         <h1>Admin | User</h1>
 
         <p>
