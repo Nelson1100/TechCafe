@@ -214,6 +214,38 @@ if (is_post()) {
 			echo "<script>alert('Successfully Added');
 			window.location='/user/cart.php'</script>";
 		}
+	} else if (isset($_POST['addQuantity']) || isset($_POST['deductQuantity'])) {
+		$targetSpecID = isset($_POST['addQuantity']) ? $_POST['addQuantity'] : $_POST['deductQuantity'];
+		$operation = isset($_POST['addQuantity']) ? 'add' : 'deduct';
+	
+		// Get current cart
+		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
+		$stm->execute([$_SESSION['Email']]);
+		$cartData = $stm->fetch();
+		$specIDs = explode(',', $cartData['ItemsAdded']);
+		$quantities = explode(',', $cartData['Quantity']);
+
+		for ($i = 0; $i < count($specIDs); $i++) {
+			if ($specIDs[$i] == $targetSpecID) {
+				if ($operation == 'add') {
+					$quantities[$i]++;
+				} elseif ($operation == 'deduct' && $quantities[$i] > 1) {
+					$quantities[$i]--;
+				}
+				break; // Stop loop once the targetSpecID is found
+			}
+		}
+
+		// Debugging: Check $quantities and $newQuantity
+		$newQuantity = implode(',', $quantities);
+
+		// Update DB with new quantity
+		$stm = $_db->prepare("UPDATE cart SET Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
+		$stm->execute([$newQuantity, $_SESSION['Email']]);
+
+		// Refresh page
+		echo "<script>window.location.href = window.location.href;</script>";
+		exit;
 	}
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
