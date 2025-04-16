@@ -28,15 +28,6 @@ if (is_post()) {
     $f = get_file('ProductThumb');  // when the user choose a NEW photo
     $photo = $_SESSION['ProductThumb'] ?? $default_photo;  // user use back existing photo
 
-    // ProductID Validation
-    if ($ProductID == '') {
-        $_err['ProductID'] = 'Required';
-    } else if (!preg_match('/^P\d{3}$/', $ProductID)) {
-        $_err['ProductID'] = 'Invalid format';
-    } else if (!is_unique($ProductID, 'product', 'ProductID')) {
-        $_err['ProductID'] = 'Duplicated';
-    }
-
     // ProductName Validation
     if ($ProductName == '') {
         $_err['ProductName'] = 'Required';
@@ -59,7 +50,7 @@ if (is_post()) {
         if (!str_starts_with($f->type, 'image/')) {
             $_err['ProductThumb'] = 'Must be image';
         } else if ($f->size > 1 * 1024 * 1024) {
-            $_err['ProductThumb'] = 'Maximum 1MB';
+            $_err['ProductThumb'] = 'Maximum 1 MB';
         }
     }
 
@@ -83,7 +74,7 @@ if (is_post()) {
         ');
         $stm->execute([$ProductName, $Category, $photo, $ProductID]);
 
-        temp('info', 'Record inserted');
+        temp('info', 'Product record updated');
         redirect('product.php');
     }
 
@@ -105,7 +96,7 @@ if (is_post()) {
 <body>
     <main class="admin">
         <h1>Product | Update</h1>
-        <form method="post" class="product-form" enctype="multipart/form-data" novalidate>
+        <form method="post" class="admin-form" enctype="multipart/form-data" novalidate>
             <label for="ProductID">ProductID</label>
             <b><?= $ProductID ?></b>
             <br>

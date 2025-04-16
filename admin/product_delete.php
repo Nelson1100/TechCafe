@@ -16,7 +16,7 @@ if (is_post()) {
     // Delete record from DB
     $stm = $_db->prepare('DELETE FROM product WHERE ProductID = ?');
     $stm->execute([$ProductID]);
-    temp('info', 'Record deleted');
+    temp('info', 'Product record deleted');
 }
 
 redirect('product.php');

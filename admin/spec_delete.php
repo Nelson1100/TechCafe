@@ -16,7 +16,7 @@ if (is_post()) {
     // Delete record from DB
     $stm = $_db->prepare('DELETE FROM specification WHERE SpecID = ?');
     $stm->execute([$SpecID]);
-    temp('info', 'Record deleted');
+    temp('info', 'Specification record deleted');
 }
 
 redirect('product.php');
