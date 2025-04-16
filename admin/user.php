@@ -44,18 +44,18 @@ $users = $stm->fetchAll();
                 <th>Actions</th>
             </tr>
             <?php foreach ($users as $u): ?>
-                <tr>
+                <tr class="admin-row">
                     <td><?= $u['UserFullName'] ?></td>
                     <td><?= $u['Username'] ?></td>
                     <td>0<?= $u['PhoneNo'] ?></td>
                     <td><?= $u['Email'] ?></td>
                     <td><?= $u['Pass'] ?></td>
-                    <td><?= $u['Address'] ?></td>
+                    <td><?= empty($u['Address']) ? '-' : $u['Address'] ?></td>
                     <td><?= $u['Roles'] ?></td>
                     <td>
-                        <button data-get="user_update.php?UserFullName=<?= $u['UserFullName'] ?>">Update</button>
-                        <button data-confirm="Confirm Delete Record?" data-post="user_delete.php?UserFullName=<?= $u['UserFullName'] ?>">Delete</button>
-                        <img src="/images/user/<?= htmlspecialchars($u['ProfilePic']) ?>" alt="ProfilePic" class="popup" width="150">
+                        <button data-get="user_update.php?Email=<?= $u['Email'] ?>">Update</button>
+                        <button data-confirm="Confirm Delete Record?" data-post="user_delete.php?Email=<?= $u['Email'] ?>">Delete</button>
+                        <img src="../images/profilePic/<?= htmlspecialchars($u['ProfilePic']) ?? 'user.png'?>" alt="Profile Picture" class="popup-photo popup" width="150" onerror="this.src='../images/user.png'">
                     </td>
                 </tr>
             <?php endforeach; ?>
