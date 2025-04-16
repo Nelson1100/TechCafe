@@ -336,7 +336,7 @@ function err($key)
 {
     global $_err;
     if ($_err[$key] ?? false) {
-        echo "<span class='err'>$_err[$key]</span>";
+        echo "<span class='err'>&nbsp;&nbsp;&nbsp;$_err[$key]</span>";
     } else {
         echo '<span></span>';
     }

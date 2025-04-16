@@ -1127,7 +1127,7 @@ iframe {
     display: flex;
 }
 
-label {
+.form-row label {
     width: 135px;
     text-align: right;
     padding-right: 10px;
@@ -1327,7 +1327,7 @@ select {
 }
 /* ----------------------------------------------------------------------------------- */
 
-/* ---------------------------- INSERT FORM ------------------------------------------ */
+/* ---------------------------- INSERT AND UPDATE FORM ------------------------------------------ */
 .err {
     color: red;
 }
@@ -1342,18 +1342,26 @@ select {
     padding: 5px;
 }
 
-.product-form {
+.admin-form {
     display: grid;
     grid: auto / auto auto auto;
     gap: 5px;
     place-content: start;
+    place-items: center start;
 }
 
-.product-form label{
+.admin-form label:not(:has(*)) {
+    place-self: stretch;
+    background: #D3D3D3;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.admin-form label{
     text-align: left;
 } 
 
-.product-form input {
+.admin-form input {
     width: 250px;
 }
 /* ----------------------------------------------------------------------------------- */

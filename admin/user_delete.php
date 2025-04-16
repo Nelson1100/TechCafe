@@ -16,7 +16,7 @@ if (is_post()) {
     // Delete record from DB
     $stm = $_db->prepare('DELETE FROM user WHERE Email = ?');
     $stm->execute([$Email]);
-    temp('info', 'Record deleted');
+    temp('info', 'User record deleted');
 }
 
 redirect('user.php');

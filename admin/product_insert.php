@@ -39,7 +39,7 @@ if (is_post()) {
     } else if (!str_starts_with($f->type, 'image/')) {
         $_err['ProductThumb'] = 'Must be image';
     } else if ($f->size > 1 * 1024 * 1024) {
-        $_err['ProductThumb'] = 'Maximum 1MB';
+        $_err['ProductThumb'] = 'Maximum 1 MB';
     }
 
     // DB operation
@@ -54,7 +54,7 @@ if (is_post()) {
         ');
         $stm->execute([$ProductID, $ProductName, $Category, $photo]);
 
-        temp('info', 'Record inserted');
+        temp('info', 'Product record inserted');
         redirect('product.php');
     }
 }
@@ -72,7 +72,7 @@ if (is_post()) {
 <body>
     <main class="admin">
         <h1>Product | Insert</h1>
-        <form method="post" class="product-form" enctype="multipart/form-data" novalidate>
+        <form method="post" class="admin-form" enctype="multipart/form-data" novalidate>
             <label for="ProductID">ProductID</label>
             <input type="text" id="ProductID" name="ProductID" maxlength="4" placeholder="P999" data-upper>
             <?= err('ProductID') ?>
