@@ -1369,15 +1369,24 @@ select {
 /* --------------------------------- CART SECTION ------------------------------------ */
 .cart-container {
     display: flex;
-    gap: 30px;
+    justify-content: space-between;
     padding: 30px;
-    max-width: 1200px;
+    max-width: 80%;
     margin: auto;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    transition: all 2.1s ease;
+    gap: 30px;
+}
+
+.cart-container.translated {
+    gap: 135px;
+    max-width: 90%;
 }
 
 .cart-items {
     flex: 2;
+    max-width: calc(100% - 30vw);
+    transition: transform 2s ease;
 }
 
 .cart-item {
@@ -1420,17 +1429,42 @@ select {
     flex: 1;
     position: sticky;
     top: 110px;
-    height: fit-content;
+    height: 220px;
+    width: 280px;
     padding: 20px;
     border: 1px solid #aaa;
     border-radius: 12px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    min-width: 280px;
+    overflow: hidden;
+    transition: all 1s ease, transform 1s ease;
+    z-index: 1;
 }
 
 .checkout-box h2 {
     margin-bottom: 20px;
+}
+
+.payment-box {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 35vw;
+    height: 100vh;
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    transform: translateX(150%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 1.5s ease, opacity 1s ease;
+    z-index: 9999;
+}
+
+.payment-box.translated {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .checkout-btn {
@@ -1443,4 +1477,16 @@ select {
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+}
+
+body.checkout-mode .main-content {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+body.checkout-mode header,
+body.checkout-mode footer {
+    display: none;
 }

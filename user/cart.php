@@ -4,6 +4,17 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <style>
+            html, body {
+                overflow-x: hidden;
+            }
+
+            body {
+                overflow-y: hidden;
+            }
+        </style>
+    </head>
     <main>
         <body>
             <div class="cart-container">
@@ -15,24 +26,25 @@
                         $stm->execute([$_SESSION['Email']]);
                         $cartData = $stm->fetch();
 
-                        $specIDs = explode(',', $cartData['ItemsAdded']);
-                        $quantities = explode(',', $cartData['Quantity']);
+                        if ($cartData) {
+                            $specIDs = explode(',', $cartData['ItemsAdded']);
+                            $quantities = explode(',', $cartData['Quantity']);
 
-                        $subtotal = 0;
-                        $totalQty = 0;
+                            $subtotal = 0;
+                            $totalQty = 0;
 
-                        for ($i = 0; $i < count($specIDs); $i++) {
-                            $specID = $specIDs[$i];
-                            $qty = $quantities[$i];
+                            for ($i = 0; $i < count($specIDs); $i++) {
+                                $specID = $specIDs[$i];
+                                $qty = $quantities[$i];
 
-                            // Get product info from specification ID
-                            $stmt = $_db->prepare("SELECT s.Specification, s.Price, s.ProductPhoto, p.ProductName FROM specification s JOIN product p ON s.ProductID = p.ProductID WHERE s.SpecID = ?");
-                            $stmt->execute([$specID]);
-                            $product = $stmt->fetch();
+                                // Get product info from specification ID
+                                $stmt = $_db->prepare("SELECT s.Specification, s.Price, s.ProductPhoto, p.ProductName FROM specification s JOIN product p ON s.ProductID = p.ProductID WHERE s.SpecID = ?");
+                                $stmt->execute([$specID]);
+                                $product = $stmt->fetch();
 
-                            $price = $product['Price'] * $qty;
-                            $subtotal += $price;
-                            $totalQty += $qty;
+                                $price = $product['Price'] * $qty;
+                                $subtotal += $price;
+                                $totalQty += $qty;
                     ?>
                     <form method="POST" class="cart-item">
                         <img src="../images/product/<?= $product['ProductPhoto'] ?>" alt="Product Image">
@@ -47,65 +59,65 @@
                             </div>
                         </div>
                     </form>
-                    <?php } ?>
+                    <?php
+                            }
+                        } else {
+                            $totalQty = "-";
+                            $subtotal = "-";
+                        }
+                    ?>
                 </div>
 
                 <!-- Checkout Box -->
                 <div class="checkout-box">
-                    <h2>Order Summary</h2>
-                    <p>Total Items: <span id="totalQty"><?= $totalQty ?></span></p>
-                    <p>Subtotal: RM <span id="subtotal"><?= $subtotal ?></span></p>
-                    <hr>
-                    <button class="checkout-btn">Checkout</button>
+                    <form>
+                        <h2>Order Summary</h2>
+                        <p>Total Items: <span id="totalQty"><?= $totalQty ?></span></p>
+                        <p>Subtotal: RM <span id="subtotal"><?= $subtotal ?></span></p>
+                        <hr>
+                        <button class="checkout-btn" type="button">Checkout</button>
+                    </form>
+                </div>
+                <div class="payment-box">
+                    <form>
+                        <h2>Payment</h2>
+                        <label for="cardName">Name on Card</label>
+                        <input type="text" id="cardName" placeholder="John Doe" required>
+
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+
+                        <div class="card-info">
+                            <div>
+                                <label for="expiry">Expiry</label>
+                                <input type="text" id="expiry" placeholder="MM/YY" required>
+                            </div>
+                            <div>
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" placeholder="123" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="pay-btn">Pay Now</button>
+                    </form>
                 </div>
             </div>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-            <script>
-                $(document).ready(function() {
-                    // Event listener for adding quantity
-                    $(".qty-count--add").on('click', function() {
-                        var specID = $(this).data('specid'); // Get the spec ID from the button data attribute
-                        updateQuantity(specID, 'add');
-                    });
-
-                    // Event listener for deducting quantity
-                    $(".qty-count--minus").on('click', function() {
-                        var specID = $(this).data('specid'); // Get the spec ID from the button data attribute
-                        updateQuantity(specID, 'deduct');
-                    });
-
-                    // Function to send AJAX request to server
-                    function updateQuantity(specID, operation) {
-                        $.ajax({
-                            url: 'cart_update.php', // Your PHP file that will handle the request
-                            type: 'POST',
-                            data: {
-                                specID: specID,
-                                operation: operation
-                            },
-                            success: function(response) {
-                                // Update the quantity on the page without refreshing
-                                var data = JSON.parse(response);
-                                if (data.success) {
-                                    // Update the quantity displayed
-                                    $("#qty-" + specID).text(data.newQuantity);
-                                    $("#totalQty").text(data.totalQty);
-                                    $("#subtotal").text(data.subtotal);
-                                } else {
-                                    alert(data.message); // Display error if any
-                                }
-                            },
-                            error: function() {
-                                alert("Error updating the quantity.");
-                            }
-                        });
-                    }
-                });
-            </script>
             <?php
                 include '../foot.php';
             ?>
         </body>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const checkout = document.querySelector('.checkout-btn');
+                const paymentBox = document.querySelector('.payment-box');
+                const cartContainer = document.querySelector('.cart-container');
+
+                checkout.addEventListener("click", () => {
+                    paymentBox.classList.add('translated');
+                    document.body.classList.add('checkout-mode');
+                    cartContainer.classList.add('translated');
+                });
+            });
+        </script>
     </main>
 </html>
