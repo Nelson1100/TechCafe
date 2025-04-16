@@ -52,7 +52,7 @@ foreach ($all_specs as $spec) {
                 <th>Actions</th>
             </tr>
             <?php foreach ($products as $p): ?>
-                <tr class="product-row" data-product-id="<?= $p['ProductID'] ?>">
+                <tr class="admin-row" data-product-id="<?= $p['ProductID'] ?>">
                     <td>
                         <span class="toggle-arrow" onclick="toggleSpecs('<?= $p['ProductID'] ?>')">&#9658</span>
                     </td>
@@ -62,7 +62,7 @@ foreach ($all_specs as $spec) {
                     <td>
                         <button data-get="product_update.php?ProductID=<?= $p['ProductID'] ?>">Update</button>
                         <button data-confirm="Confirm Delete Record?" data-post="product_delete.php?ProductID=<?= $p['ProductID'] ?>">Delete</button>
-                        <img src="/images/product/<?= htmlspecialchars($p['ProductThumb']) ?>" alt="Product Thumbnail" class="popup-photo popup" width="150">
+                        <img src="../images/product/<?= htmlspecialchars($p['ProductThumb']) ?>" alt="Product Thumbnail" class="popup-photo popup" width="150">
                     </td>
                 </tr>
                 <!-- Specifications container -->

@@ -1,4 +1,7 @@
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
 }
@@ -37,6 +40,7 @@ a {
 }
 
 main {
+    flex: 1;
     padding-top: 180px; 
     z-index: 1; 
 }
@@ -148,7 +152,7 @@ footer {
     padding: 25px 0;
     background-color: #000000;
     width: 100%;
-    margin-bottom:-30px;
+    margin-bottom: 0px;
     text-align: center;
     font-size:1.1em;
 }
@@ -1229,7 +1233,7 @@ select {
     z-index: 0;
 }
 
-.admin-table .product-row:hover .popup {
+.admin-table .admin-row:hover .popup {
     display: block;
 }
 
