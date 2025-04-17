@@ -1301,6 +1301,35 @@ select {
     max-width: 150px;
     cursor: pointer;
 }
+
+.description-cell {
+    cursor: pointer;
+    position: relative;
+}
+
+.description-truncated {
+    display: inline;
+}
+
+.description-full {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 100;
+    min-width: 300px;
+    max-width: 500px;
+    white-space: normal;
+}
+
+.description-active .description-full {
+    display: block;
+}
 /* ----------------------------------------------------------------------------------- */
 
 /* ---------------------------- FLASH MESSAGE ---------------------------------------- */

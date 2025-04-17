@@ -64,3 +64,16 @@ document.addEventListener('click', e => {
         });
     }
 });
+
+// Function to toggle description visibility
+function toggleDescription(cell) {
+    // Close any other open descriptions
+    document.querySelectorAll('.description-active').forEach(item => {
+        if (item !== cell) {
+            item.classList.remove('description-active');
+        }
+    });
+    
+    // Toggle the clicked description
+    cell.classList.toggle('description-active');
+}

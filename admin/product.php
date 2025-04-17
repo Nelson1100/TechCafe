@@ -84,7 +84,16 @@ foreach ($all_specs as $spec) {
                                             <td><?= $spec['SpecID'] ?></td>
                                             <td><?= $spec['Specification'] ?></td>
                                             <td><?= number_format($spec['Price'], 2) ?></td>
-                                            <td><?= substr($spec['Descr'], 0, 50) ?><?= strlen($spec['Descr']) > 50 ? '...' : '' ?></td>
+                                            <td class="description-cell" onclick="toggleDescription(this)">
+                                                <div class="description-truncated">
+                                                    <?= substr($spec['Descr'], 0, 50) ?><?= strlen($spec['Descr']) > 50 ? '...' : '' ?>
+                                                </div>
+                                                <?php if (strlen($spec['Descr']) > 50): ?>
+                                                    <div class="description-full">
+                                                        <?= htmlspecialchars($spec['Descr']) ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </td>
                                             <td>
                                                 <button data-get="spec_update.php?SpecID=<?= $spec['SpecID'] ?>">Update</button>
                                                 <button data-confirm="Confirm Delete Specification?" data-post="spec_delete.php?SpecID=<?= $spec['SpecID'] ?>">Delete</button>
