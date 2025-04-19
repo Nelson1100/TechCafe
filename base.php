@@ -345,3 +345,12 @@ function err($key)
 		echo '<span></span>';
 	}
 }
+
+// Preserve form values on error
+function old($field) {
+    global $_POST;
+    if (isset($_POST[$field])) {
+        return htmlspecialchars($_POST[$field]);
+    }
+    return '';
+}
