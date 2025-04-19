@@ -365,7 +365,7 @@ footer .bottom-footer p {
     background-position: top;
 }
 
-.signBackground img {
+.signBackground img, #backBtn {
     margin: 25px 30px;
     height: 70px;
 }
@@ -1412,7 +1412,7 @@ select {
 }
 
 .cart-container.translated {
-    gap: 135px;
+    gap: 80px;
     max-width: 90%;
 }
 
@@ -1479,25 +1479,85 @@ select {
 }
 
 .payment-box {
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     width: 35vw;
+    max-width: 450px;
     height: 100vh;
     background-color: #ffffff;
-    padding: 30px;
-    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    padding: 40px 30px;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
     transform: translateX(150%);
     opacity: 0;
     pointer-events: none;
     transition: transform 1.5s ease, opacity 1s ease;
     z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .payment-box.translated {
     transform: translateX(0);
     opacity: 1;
     pointer-events: auto;
+}
+
+.payment-box h2 {
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #333;
+    margin-top: -30px;
+}
+
+.payment-box label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #444;
+}
+
+.payment-box input[type="text"] {
+    width: 100%;
+    padding: 12px 0px 12px 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.payment-box input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.card-info {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card-info div {
+    flex: 1;
+}
+
+.pay-btn {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pay-btn:hover {
+    background-color: #0056b3;
 }
 
 .checkout-btn {
