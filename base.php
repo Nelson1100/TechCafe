@@ -3,6 +3,17 @@
 date_default_timezone_set('Asia/Kuala_Lumpur');
 session_start();
 
+if (isset($_SERVER['HTTP_REFERER']) &&
+    $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/register.php" &&
+    $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/login.php") {
+    
+    $_SESSION['previousPage'] = $_SERVER['HTTP_REFERER']; // Store in session
+}
+
+$_db = new PDO('mysql:dbname=techcafe', 'root', '', [
+	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+]);
+
 function is_get()
 {
 	return $_SERVER['REQUEST_METHOD'] == 'GET';
@@ -76,9 +87,12 @@ function is_unique($value, $table, $field)
 	return $stm->fetchColumn() == 0;
 }
 
-$_db = new PDO('mysql:dbname=techcafe', 'root', '', [
-	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+if (isset($_SESSION['Email'])) {
+	$email=$_SESSION['Email'];
+	$stm = $_db->prepare("SELECT * FROM user WHERE Email = ?");
+	$stm->execute([$email]);
+	$user = $stm->fetch();
+}
 
 if (isset($_GET['ProductID'])) {
 	$ProductID = urldecode($_GET['ProductID']);
@@ -153,7 +167,6 @@ if (is_post()) {
 		$new_phone      = isset($_POST['PhoneNo']) ? trim($_POST['PhoneNo']) : '';
 		$new_address    = isset($_POST['Address']) ? trim($_POST['Address']) : '';
 
-		echo "<script>alert('$new_username')</script>";
 		// Fetch current user data from database
 		$stmt = $_db->prepare("SELECT * FROM user WHERE Email = ?");
 		$stmt->execute([$_SESSION['Email']]);
@@ -196,27 +209,46 @@ if (is_post()) {
 			}
 		}
 	} else if (isset($_POST['addCart'])) {
-		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ?");
-		$stm->execute([$_SESSION['Email']]);
-		$cartItems = $stm->fetch();
-
-		$specID = $_POST['selectedSpecID'];
-		$quantity = $_POST['product-qty'];
-
-
-		if (!$cartItems) {		// For creating cart for first purchase user
-			$stm = $_db->prepare("INSERT INTO cart (Email, ItemsAdded, Quantity, OrderStatus) VALUES (?, ?, ?, ?)");
-			$stm->execute([$_SESSION['Email'], $specID, $quantity, 'InCart']);
-			echo "<script>alert('Successfully Added');
-			window.location='/user/cart.php'</script>";
+		$previousPage = $_SERVER['HTTP_REFERER'];
+	
+		if (isset($_SESSION['Email'])) {
+			$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
+			$stm->execute([$_SESSION['Email']]);
+			$cartItems = $stm->fetch();
+	
+			$specID = $_POST['selectedSpecID'];
+			$quantity = $_POST['product-qty'];
+	
+			if (!$cartItems) {
+				// First time adding to cart
+				$stm = $_db->prepare("INSERT INTO cart (Email, ItemsAdded, Quantity, OrderStatus) VALUES (?, ?, ?, ?)");
+				$stm->execute([$_SESSION['Email'], $specID, $quantity, 'InCart']);
+				echo "<script>alert('Successfully Added'); window.location='$previousPage'</script>";
+			} else {
+				$currentItemAdded = explode(',', $cartItems['ItemsAdded']);
+				$currentQuantity = explode(',', $cartItems['Quantity']);
+	
+				if (in_array($specID, $currentItemAdded)) {
+					echo "<script>alert('This item is already in your cart.');
+					window.location='$previousPage'</script>";
+				} else {
+					// Append the new item
+					$currentItemAdded[] = $specID;
+					$currentQuantity[] = $quantity;
+	
+					$newItems = implode(',', $currentItemAdded);
+					$newQuantities = implode(',', $currentQuantity);
+	
+					$stm = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
+					$stm->execute([$newItems, $newQuantities, $_SESSION['Email']]);
+	
+					echo "<script>alert('Successfully Added'); window.location='$previousPage'</script>";
+				}
+			}
 		} else {
-			$currentItemAdded = $cartItems['ItemsAdded'];
-			$currentQuantity = $cartItems['Quantity'];
-			$stm = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
-			$stm->execute([$currentItemAdded . "," . $specID, $currentQuantity . "," . $quantity, $_SESSION['Email']]);
-			echo "<script>alert('Successfully Added');
-			window.location='/user/cart.php'</script>";
-		}
+			echo "<script>alert('Please login to continue adding your cart.');
+			window.location='$previousPage'</script>";
+		}	
 	} else if (isset($_POST['addQuantity']) || isset($_POST['deductQuantity'])) {
 		$targetSpecID = isset($_POST['addQuantity']) ? $_POST['addQuantity'] : $_POST['deductQuantity'];
 		$operation = isset($_POST['addQuantity']) ? 'add' : 'deduct';

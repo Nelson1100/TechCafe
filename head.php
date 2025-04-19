@@ -8,6 +8,13 @@
         <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="shortcut icon" href="/images/TechCafe.png"> <!-- Favicon for the Page -->
     </head>
+    <?php
+        if (isset($_SESSION['Email'])) {
+            $stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
+            $stm->execute([$_SESSION['Email']]);
+            $cartItems = $stm->fetch();
+        }
+    ?>
     <body>
         <header style="z-index: 9999;">
             <div class="header-container" id="header">
@@ -21,8 +28,24 @@
                         <input id="search" class="search-txt" type="text" placeholder="Search Product">
                         <button class="submit"><i class="fas fa-search"></i></button>
                     </div>
-                    <a href="cart.php"><img src="/images/cart.png" alt="Cart"></a>
-                    <a href="<?= isset($_SESSION['Email']) ? 'userProfile.php' : 'login.php' ?>"><img src="/images/user.png" alt="User Profile"></a>
+
+                    <?php
+                        if (isset($_SESSION['Email'])) {
+                    ?>
+                            <a href="#" id="cartLink"><img src="/images/cart.png" alt="Cart"></a>
+                            <a href="userProfile.php">
+                                <img src="<?= $user['ProfilePic'] ? '/images/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%;">
+                            </a>
+                    <?php
+                        } else {
+                    ?>
+                            <a href="#" id="cart"><img src="/images/cart.png" alt="Cart"></a>
+                            <a href="login.php">
+                                <img src="/images/user.png" alt="User Profile" style="border-radius: 50%;">
+                            </a>
+                    <?php
+                        }
+                    ?>
                 </div>
 
                 <nav id="navigationBar">
@@ -38,5 +61,28 @@
         </header>
 
         <script src="/app/js/header.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const cartIcon = document.getElementById("cart");
+                const cartLink = document.getElementById('cartLink');
+                const hasItems = <?= isset($cartItems) && $cartItems ? 'true' : 'false' ?>;
+
+                if (cartIcon) {
+                    cartIcon.addEventListener("click", function () {
+                        alert("Please sign in to view your cart.");
+                    });
+                }
+
+                if (cartLink) {
+                    cartLink.addEventListener('click', function () {
+                        if (hasItems) {
+                            window.location.href = 'cart.php';
+                        } else {
+                            alert('Oops! Nothing in your cart.');
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

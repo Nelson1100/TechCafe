@@ -1630,5 +1630,34 @@ body.checkout-mode .main-content {
 
 body.checkout-mode header,
 body.checkout-mode footer {
-    display: none;
+    opacity: 0;
+    transition: all 1s ease;
+    pointer-events: none;
+}
+
+body.checkout-mode-revert header,
+body.checkout-mode-revert footer {
+    opacity: 1;
+    transition: all 1s ease;
+    pointer-events: all;
+}
+
+#cartBack, #cartSummary {
+    opacity: 0;
+    transition: all 3s ease;
+}
+
+#cartBack {
+    width: fit-content;
+}
+
+#cartSummary {
+    font-family: 'Lexend', sans-serif;
+    top: 120px;
+    left: 90px;
+}
+
+#cartSummary, #cartBack {
+    z-index: 1000;
+    position: absolute;
 }
