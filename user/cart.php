@@ -13,25 +13,10 @@
             body {
                 overflow-y: hidden;
             }
-
-            #cartBack {
-                width: fit-content;
-            }
-
-            #cartSummary {
-                font-family: 'Lexend', sans-serif;
-                top: 120px;
-                left: 90px;
-            }
-
-            #cartSummary, #cartBack {
-                z-index: 1000;
-                position: absolute;
-            }
         </style>
     </head>
-    <a href="/user/cart.php" id="cartBack" class="hidden2"><img src="../images/back-black.png" alt="Back Button" id="backBtn"></a>
-    <h2 id="cartSummary" class="hidden2">Order Summary:</h2>
+    <a href="#" id="cartBack"><img src="../images/back-black.png" alt="Back Button" id="backBtn"></a>
+    <h2 id="cartSummary">Order Summary:</h2>
     <main>
         <body>
             <div class="cart-container">
@@ -39,29 +24,30 @@
                 <div class="cart-items">
                     <?php
                         // Fetch cart where OrderStatus is 'InCart'
-                        $stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
-                        $stm->execute([$_SESSION['Email']]);
-                        $cartData = $stm->fetch();
+                        if (isset($_SESSION['Email'])) {
+                            $stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
+                            $stm->execute([$_SESSION['Email']]);
+                            $cartData = $stm->fetch();
 
-                        if ($cartData) {
-                            $specIDs = explode(',', $cartData['ItemsAdded']);
-                            $quantities = explode(',', $cartData['Quantity']);
-
-                            $subtotal = 0;
-                            $totalQty = 0;
-
-                            for ($i = 0; $i < count($specIDs); $i++) {
-                                $specID = $specIDs[$i];
-                                $qty = $quantities[$i];
-
-                                // Get product info from specification ID
-                                $stmt = $_db->prepare("SELECT s.Specification, s.Price, s.ProductPhoto, p.ProductName FROM specification s JOIN product p ON s.ProductID = p.ProductID WHERE s.SpecID = ?");
-                                $stmt->execute([$specID]);
-                                $product = $stmt->fetch();
-
-                                $price = $product['Price'] * $qty;
-                                $subtotal += $price;
-                                $totalQty += $qty;
+                            if ($cartData) {
+                                $specIDs = explode(',', $cartData['ItemsAdded']);
+                                $quantities = explode(',', $cartData['Quantity']);
+    
+                                $subtotal = 0;
+                                $totalQty = 0;
+    
+                                for ($i = 0; $i < count($specIDs); $i++) {
+                                    $specID = $specIDs[$i];
+                                    $qty = $quantities[$i];
+    
+                                    // Get product info from specification ID
+                                    $stmt = $_db->prepare("SELECT s.Specification, s.Price, s.ProductPhoto, p.ProductName FROM specification s JOIN product p ON s.ProductID = p.ProductID WHERE s.SpecID = ?");
+                                    $stmt->execute([$specID]);
+                                    $product = $stmt->fetch();
+    
+                                    $price = $product['Price'] * $qty;
+                                    $subtotal += $price;
+                                    $totalQty += $qty;
                     ?>
                     <form method="POST" class="cart-item">
                         <img src="../images/product/<?= $product['ProductPhoto'] ?>" alt="Product Image">
@@ -77,10 +63,8 @@
                         </div>
                     </form>
                     <?php
-                            }
-                        } else {
-                            $totalQty = "-";
-                            $subtotal = "-";
+                                }
+                            } 
                         }
                     ?>
                 </div>
@@ -134,11 +118,25 @@
                 const checkout = document.querySelector('.checkout-btn');
                 const paymentBox = document.querySelector('.payment-box');
                 const cartContainer = document.querySelector('.cart-container');
+                const backBtn = document.getElementById('cartBack');
+                const orderSum = document.getElementById('cartSummary');
 
                 checkout.addEventListener("click", () => {
                     paymentBox.classList.add('translated');
                     document.body.classList.add('checkout-mode');
+                    document.body.classList.remove('checkout-mode-revert');
                     cartContainer.classList.add('translated');
+                    backBtn.style.opacity = 1;
+                    orderSum.style.opacity = 1;
+                });
+
+                backBtn.addEventListener("click", () => {
+                    paymentBox.classList.remove('translated');
+                    document.body.classList.remove('checkout-mode');
+                    document.body.classList.add('checkout-mode-revert');
+                    cartContainer.classList.remove('translated');
+                    backBtn.style.opacity = 0;
+                    orderSum.style.opacity = 0;
                 });
             });
         </script>

@@ -23,7 +23,11 @@
                             <ul>
                                 <li><a href="/user/about.php">about</a></li>
                                 <li><a href="/user/services.php">services</a></li>
-                                <li><a href="/user/login.php">login</a></li>
+                                <?php
+                                    if (!isset($_SESSION['Email'])){
+                                        echo "<li><a href='/user/login.php'>login</a></li>";
+                                    }
+                                ?>
                             </ul>
                         </div>
                         <div class="footer-col">
