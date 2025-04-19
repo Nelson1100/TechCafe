@@ -92,6 +92,7 @@ if (is_post()) {
 	if (isset($_POST['login'])) {
 		$email = $_POST['email'];
 		$password = $_POST['password'];
+		$pass = SHA1($password);
 
 		$stm = $_db->prepare("SELECT UserFullName, Username, PhoneNo, Email, Pass, Roles FROM user WHERE Email = ?");
 		$stm->execute([$email]);
@@ -100,7 +101,7 @@ if (is_post()) {
 		if (!$user) {
 			echo "<script>alert('No user found. Please sign up.');
 			window.location='/user/register.php'</script>";
-		} else if (($password != $user['Pass'])) {
+		} else if (($pass != $user['Pass'])) {
 			echo "<script>alert('Wrong password. Please try again.');
 				window.location='/user/login.php'</script>";
 		} else {
@@ -135,7 +136,7 @@ if (is_post()) {
 			echo "<script>alert('Duplicated phone number is found! Please try to login.');
 			window.location='/user/login.php'</script>";
 		} else {
-			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', '$password', 'User')");
+			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', SHA1('$password'), 'User')");
 			$stm->execute();
 			$_SESSION['Email'] = $email;
 			echo "<script>alert('Welcome, $username! Your account has been created successfully.');
