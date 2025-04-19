@@ -36,7 +36,7 @@ $users = $stm->fetchAll();
             <tr>
                 <th>UserFullName</th>
                 <th>Username</th>
-                <th>PhoneNo</th>
+                <th>PhoneNo (+60)</th>
                 <th>Email</th>
                 <th>Pass</th>
                 <th>Address</th>

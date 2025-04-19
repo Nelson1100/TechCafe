@@ -3,20 +3,34 @@ require '../base.php';
 include '../admin_head.php';
 
 if (is_post()) {
+    $Email = req('Email');
     $UserFullName = req('UserFullName');
     $Username = req('Username');
     $PhoneNo = req('PhoneNo');
-    $Email = req('Email');
     $Pass = req('Pass');
+    $ConfirmPass = req('ConfirmPass');
     $Address = req('Address');
     $Roles = req('Roles');
     $f = get_file('ProfilePic');
+
+    // Email Validation
+    if ($Email == '') {
+        $_err['Email'] = 'Required';
+    } else if (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
+        $_err['Email'] = 'Please enter a valid email address (e.g., user@example.com)';
+    } else if (!is_unique($Email, 'user', 'Email')) {
+        $_err['Email'] = 'Email already registered';
+    } else if (strlen($Email) > 100) {
+        $_err['Email'] = 'Maximum 100 characters';
+    }
 
     // UserFullName Validation
     if ($UserFullName == '') {
         $_err['UserFullName'] = 'Required';
     } else if (strlen($UserFullName) > 100) {
         $_err['UserFullName'] = 'Maximum 100 characters';
+    } else if (!preg_match('/^[A-Za-z\s]+$/', $UserFullName)) {
+        $_err['UserFullName'] = 'Only letters are allowed';
     }
 
     // Username Validation
@@ -29,17 +43,8 @@ if (is_post()) {
     //PhoneNo Validation
     if ($PhoneNo == '') {
         $_err['PhoneNo'] = 'Required';
-    } else if (!preg_match('/^01[0-46-9][0-9]{7,8}$/', $PhoneNo)) {
-        $_err['PhoneNo'] = 'Must be a valid Malaysian mobile number (e.g., 010–014, 016–019; 10–11 digits)';
-    }
-
-    // Email Validation
-    if ($Email == '') {
-        $_err['Email'] = 'Required';
-    } else if (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
-        $_err['Email'] = 'Please enter a valid email address (e.g., user@example.com)';
-    } else if (!is_unique($Email, 'user', 'Email')) {
-        $_err['Email'] = 'Email already registered';
+    } else if (!preg_match('/^1[0-46-9][0-9]{7,8}$/', $PhoneNo)) {
+        $_err['PhoneNo'] = 'Must be a valid Malaysian mobile number starting with 10-14 or 16-19 (9-10 digits total)';
     }
 
     // Pass Validation
@@ -47,6 +52,15 @@ if (is_post()) {
         $_err['Pass'] = 'Required';
     } else if (strlen($Pass) > 20) {
         $_err['Pass'] = 'Maximum 20 characters';
+    } else if (strlen($Pass) < 8) {
+        $_err['Pass'] = 'Minimum 8 characters required';
+    }
+
+    // Confirm Password Validation
+    if ($ConfirmPass == '') {
+        $_err['ConfirmPass'] = 'Required when changing password';
+    } else if ($Pass != $ConfirmPass) {
+        $_err['ConfirmPass'] = 'Passwords do not match';
     }
 
     // Address Validation (can be null)
@@ -107,25 +121,29 @@ if (is_post()) {
     <main class="admin">
         <h1>User | Insert</h1>
         <form method="post" class="admin-form" enctype="multipart/form-data" novalidate>
+            <label for="Email">Email</label>
+            <input type="email" id="Email" name="Email" placeholder="example@domain.com" value="<?= old('Email') ?>" required>
+            <?= err('Email') ?>
+
             <label for="UserFullName">UserFullName</label>
-            <input type="text" id="UserFullName" name="UserFullName" maxlength="100" value="<?= old('UserFullName') ?>">
+            <input type="text" id="UserFullName" name="UserFullName" maxlength="100" pattern="^[A-Za-z\s]+$" title="Only letters are allowed." value="<?= old('UserFullName') ?>" required>
             <?= err('UserFullName') ?>
 
             <label for="Username">Username</label>
-            <input type="text" id="Username" name="Username" maxlength="15" value="<?= old('Username') ?>">
+            <input type="text" id="Username" name="Username" maxlength="15" value="<?= old('Username') ?>" required>
             <?= err('Username') ?>
 
-            <label for="PhoneNo">PhoneNo</label>
-            <input type="tel" id="PhoneNo" name="PhoneNo" pattern="01[0-46-9][0-9]{7,8}" maxlength="11" placeholder="01XXXXXXXXX" value="<?= old('PhoneNo') ?>">
+            <label for="PhoneNo">PhoneNo (+60)</label>
+            <input type="tel" id="PhoneNo" name="PhoneNo" pattern="1[0-46-9][0-9]{7,8}" maxlength="10" placeholder="1XXXXXXXXX" title="Start with 1 without -" value="<?= old('PhoneNo') ?>" required>
             <?= err('PhoneNo') ?>
 
-            <label for="Email">Email</label>
-            <input type="email" id="Email" name="Email" placeholder="example@domain.com" value="<?= old('Email') ?>">
-            <?= err('Email') ?>
-
             <label for="Pass">Pass</label>
-            <input type="password" id="Pass" name="Pass" maxlength="20">
+            <input type="password" id="Pass" name="Pass" maxlength="20" pattern=".{8,}" title="Eight or more characters but less than twenty." required>
             <?= err('Pass') ?>
+
+            <label for="ConfirmPass">Confirm Pass</label>
+            <input type="password" id="ConfirmPass" name="ConfirmPass" maxlength="20" pattern=".{8,}" title="Eight or more characters but less than twenty." required>
+            <?= err('ConfirmPass') ?>
 
             <label for="Address">Address</label>
             <input type="text" id="Address" name="Address" maxlength="100" value="<?= old('Address') ?>">

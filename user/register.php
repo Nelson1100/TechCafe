@@ -26,11 +26,11 @@
                         <span>Username</span>
                     </div>
                     <div class="inputBox">
-                        <input type="email" name="email" maxlength="40" size="35" required>
+                        <input type="email" name="email" maxlength="100" size="35" required>
                         <span>Email</span>
                     </div>
                     <div class="inputBox">
-                        <input type="tel" name="phonenumber" maxlength="11" size="35" pattern="[0][1][0-9].{7,}" title="Start with 01 without -" required>
+                        <input type="tel" name="phonenumber" maxlength="11" size="35" pattern="01[0-46-9][0-9]{7,8}" title="Start with 01 without -" required>
                         <span>Phone Number</span>
                     </div>
                     <div class="inputBox">

@@ -16,7 +16,7 @@ if (is_get()) {
     }
 
     extract((array)$s);
-    // store product photo into session
+    // store specification photo into session
     $_SESSION['ProductPhoto'] = $ProductPhoto ?? $default_photo;
     $photo = $ProductPhoto ?? $default_photo;
 }
