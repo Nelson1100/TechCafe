@@ -74,11 +74,11 @@ if (is_post()) {
         <h1>Product | Insert</h1>
         <form method="post" class="admin-form" enctype="multipart/form-data" novalidate>
             <label for="ProductID">ProductID</label>
-            <input type="text" id="ProductID" name="ProductID" maxlength="4" placeholder="P999" data-upper>
+            <input type="text" id="ProductID" name="ProductID" maxlength="4" placeholder="P999" value="<?= old('ProductID') ?>" data-upper required>
             <?= err('ProductID') ?>
 
             <label for="ProductName">ProductName</label>
-            <input type="text" id="ProductName" name="ProductName" maxlength="100">
+            <input type="text" id="ProductName" name="ProductName" maxlength="100" value="<?= old('ProductName') ?>" required>
             <?= err('ProductName') ?>
 
             <label for="Category">Category</label>
@@ -92,7 +92,7 @@ if (is_post()) {
 
             <label for="ProductThumb">ProductThumb</label>
             <label class="upload" tabindex="0">
-                <input type="file" id="ProductThumb" name="ProductThumb" accept="image/*" hidden>
+                <input type="file" id="ProductThumb" name="ProductThumb" accept="image/*" hidden required>
                 <img src="../images/photo.jpg" alt="Photo">
             </label>
             <?= err('ProductThumb') ?>

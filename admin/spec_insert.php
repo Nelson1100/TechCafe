@@ -82,24 +82,24 @@ if (is_post()) {
         <h1>Specification | Insert</h1>
         <form method="post" class="admin-form" enctype="multipart/form-data" novalidate>
             <label for="SpecID">SpecID</label>
-            <input type="text" id="SpecID" name="SpecID" maxlength="4" placeholder="S999" data-upper>
+            <input type="text" id="SpecID" name="SpecID" maxlength="4" placeholder="S999" value="<?= old('SpecID') ?>" data-upper required>
             <?= err('SpecID') ?>
 
             <label for="Specification">Specification</label>
-            <input type="text" id="Specification" name="Specification" maxlength="100">
+            <input type="text" id="Specification" name="Specification" maxlength="100" value="<?= old('Specification') ?>" required>
             <?= err('Specification') ?>
 
             <label for="Price">Price</label>
-            <input type="number" id="Price" name="Price" min="0.01" max="99999.99" step="0.01">
+            <input type="number" id="Price" name="Price" min="0.01" max="99999.99" step="0.01" value="<?= old('Price') ?>">
             <?= err('Price') ?>
 
             <label for="Descr">Description</label>
-            <textarea id="Descr" name="Descr" rows="7" cols="30"></textarea>
+            <textarea id="Descr" name="Descr" rows="7" cols="30" value="<?= old('Descr') ?>" required></textarea>
             <?= err('Descr') ?>
 
             <label for="ProductPhoto">ProductPhoto</label>
             <label class="upload" tabindex="0">
-                <input type="file" id="ProductPhoto" name="ProductPhoto" accept="image/*" hidden>
+                <input type="file" id="ProductPhoto" name="ProductPhoto" accept="image/*" hidden required>
                 <img src="../images/photo.jpg" alt="Photo">
             </label>
             <?= err('ProductPhoto') ?>
