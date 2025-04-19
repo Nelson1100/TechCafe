@@ -14,9 +14,14 @@ include '../admin_head.php';
 </head>
 
 <body>
-    <?php
-    include '../admin_foot.php';
-    ?>
+    <main class="admin">
+        <h1>Admin | Home</h1>
+        <p>Nothing to see here ...</p>
+    </main>
+
+        <?php
+        include '../admin_foot.php';
+        ?>
 </body>
 
 </html>
