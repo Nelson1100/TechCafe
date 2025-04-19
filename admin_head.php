@@ -21,23 +21,22 @@ if ($_SESSION['Role'] !== 'Admin') {
 <body>
     <!-- Flash message -->
     <div id="info"><?= temp('info') ?></div>
-    
+
     <header>
         <div class="header-container" id="header">
             <div id="header-icons-left" class="header-icons">
-                <a href="/admin/admin.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
+                <a href="/admin/home.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
                 <h3 id="greeting">Welcome to the Admin Page</h3>
             </div>
             <div id="header-icons-right" class="header-icons">
-                <a href="/admin/add_admin.php"><img src="/images/user.png" alt="User Profile"></a>
+                <a href="/admin/adminProfile.php"><img src="/images/user.png" alt="User Profile"></a>
             </div>
 
             <nav id="navigationBar">
                 <ul>
-                    <li><a href="/admin/admin.php">Home</a></li>
+                    <li><a href="/admin/home.php">Home</a></li>
                     <li><a href="/admin/product.php">Product</a></li>
                     <li><a href="/admin/user.php">User</a></li>
-                    <li><a href="/admin/add_admin.php">Add Admin</a></li>
                 </ul>
             </nav>
         </div>
