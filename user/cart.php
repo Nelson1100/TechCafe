@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+    <title>Order</title>
         <style>
             html, body {
                 overflow-x: hidden;
@@ -84,7 +85,7 @@
                         <h2>Payment</h2>
 
                         <label for="cardName">Name on Card</label>
-                        <input type="text" id="cardName" placeholder="John Doe" required>
+                        <input type="text" id="cardName" placeholder="<?= $_SESSION['Username'] ?>" required>
 
                         <label for="cardNumber">Card Number</label>
                         <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
@@ -100,7 +101,6 @@
                             </div>
                         </div>
 
-                        <!-- ✅ Total Summary -->
                         <hr>
                         <p style="font-size: 17px; font-weight: 600;">Total Items: <span id="totalQty"><?= $totalQty ?></span></p>
                         <p style="font-size: 17px; font-weight: 600;">Total: RM <span id="paymentTotal"><?= $subtotal ?></span></p>
