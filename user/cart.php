@@ -13,8 +13,25 @@
             body {
                 overflow-y: hidden;
             }
+
+            #cartBack {
+                width: fit-content;
+            }
+
+            #cartSummary {
+                font-family: 'Lexend', sans-serif;
+                top: 120px;
+                left: 90px;
+            }
+
+            #cartSummary, #cartBack {
+                z-index: 1000;
+                position: absolute;
+            }
         </style>
     </head>
+    <a href="/user/cart.php" id="cartBack" class="hidden2"><img src="../images/back-black.png" alt="Back Button" id="backBtn"></a>
+    <h2 id="cartSummary" class="hidden2">Order Summary:</h2>
     <main>
         <body>
             <div class="cart-container">
@@ -81,6 +98,7 @@
                 <div class="payment-box">
                     <form>
                         <h2>Payment</h2>
+
                         <label for="cardName">Name on Card</label>
                         <input type="text" id="cardName" placeholder="John Doe" required>
 
@@ -98,6 +116,11 @@
                             </div>
                         </div>
 
+                        <!-- ✅ Total Summary -->
+                        <hr>
+                        <p style="font-size: 17px; font-weight: 600;">Total Items: <span id="totalQty"><?= $totalQty ?></span></p>
+                        <p style="font-size: 17px; font-weight: 600;">Total: RM <span id="paymentTotal"><?= $subtotal ?></span></p>
+                        
                         <button type="submit" class="pay-btn">Pay Now</button>
                     </form>
                 </div>

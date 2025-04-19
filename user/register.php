@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="../css/app.css">
         <link rel="icon" type="image/x-icon" href="../images/TechCafe.png">
     </head>
-    <a href="/user/home.php"><img src="../images/back.png" alt="Back Button"></a>
+    <a href="/user/home.php" style="width: fit-content;"><img src="../images/back.png" alt="Back Button"></a>
     <main class="signPage">
         <body class="signBackground">
         <h2>Sign Up</h2>

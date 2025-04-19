@@ -9,7 +9,7 @@
         <link rel="shortcut icon" href="/images/TechCafe.png"> <!-- Favicon for the Page -->
     </head>
     <body>
-        <header>
+        <header style="z-index: 9999;">
             <div class="header-container" id="header">
                 <div id="header-icons-left" class="header-icons">
                     <a href="/user/home.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>

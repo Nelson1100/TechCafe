@@ -39,7 +39,7 @@
 		}
 	</style>
 </head>
-<a href="/user/home.php"><img src="../images/back.png" alt="Back Button"></a>
+<a href="/user/home.php" style="width: fit-content;"><img src="../images/back.png" alt="Back Button"></a>
 	<main class="signPage" style="width: 450px;">
 		<body class="signBackground">
 			<?php
