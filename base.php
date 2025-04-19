@@ -91,7 +91,7 @@ if (isset($_GET['ProductID'])) {
 if (is_post()) {
 	if (isset($_POST['login'])) {
 		$email = $_POST['email'];
-		$password = $_POST['password'];
+		$password = SHA1($_POST['password']);
 
 		$stm = $_db->prepare("SELECT UserFullName, Username, PhoneNo, Email, Pass, Roles FROM user WHERE Email = ?");
 		$stm->execute([$email]);
@@ -135,7 +135,7 @@ if (is_post()) {
 			echo "<script>alert('Duplicated phone number is found! Please try to login.');
 			window.location='/user/login.php'</script>";
 		} else {
-			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', '$password', 'User')");
+			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', SHA1('$password'), 'User')");
 			$stm->execute();
 			$_SESSION['Email'] = $email;
 			echo "<script>alert('Welcome, $username! Your account has been created successfully.');
