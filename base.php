@@ -91,8 +91,7 @@ if (isset($_GET['ProductID'])) {
 if (is_post()) {
 	if (isset($_POST['login'])) {
 		$email = $_POST['email'];
-		$password = $_POST['password'];
-		$pass = SHA1($password);
+		$password = SHA1($_POST['password']);
 
 		$stm = $_db->prepare("SELECT UserFullName, Username, PhoneNo, Email, Pass, Roles FROM user WHERE Email = ?");
 		$stm->execute([$email]);
@@ -101,7 +100,7 @@ if (is_post()) {
 		if (!$user) {
 			echo "<script>alert('No user found. Please sign up.');
 			window.location='/user/register.php'</script>";
-		} else if (($pass != $user['Pass'])) {
+		} else if (($password != $user['Pass'])) {
 			echo "<script>alert('Wrong password. Please try again.');
 				window.location='/user/login.php'</script>";
 		} else {
