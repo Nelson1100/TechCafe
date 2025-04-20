@@ -1,6 +1,15 @@
 <?php
     require '../base.php';
     include '../head.php';
+
+    $stm = $_db->prepare("SELECT * FROM user WHERE Email = ?");
+    $stm->execute([$email]);
+    $user = $stm->fetch();
+
+    $_SESSION['UserFullName'] = $user['UserFullName'];
+    $_SESSION['Email'] = $user['Email'];
+    $_SESSION['Address'] = $user['Address'];
+    $_SESSION['PhoneNo'] = "0".$user['PhoneNo'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +22,17 @@
 
             body {
                 overflow-y: hidden;
+            }
+
+            #delete {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                color: red;
+                font-size: 18px;
+                background: none;
+                border: none;
+                cursor: pointer;
             }
         </style>
     </head>
@@ -51,9 +71,10 @@
                                     $totalQty += $qty;
                     ?>
                     <form method="POST" class="cart-item">
+                        <button class="far fa-trash-alt" id="delete" name="deleteProduct" value="<?= $specID ?>" type="submit"></button>
                         <img src="../images/product/<?= $product['ProductPhoto'] ?>" alt="Product Image">
                         <div class="item-details">
-                            <h3><?= $product['ProductName'] ?></h3>
+                            <h3 style="margin-top: 10px;"><?= $product['ProductName'] ?></h3>
                             <p>Specification: <?= $product['Specification'] ?></p>
                             <p>Price: RM <?= $product['Price'] ?> x <?= $qty ?> = RM <?= $price ?></p>
                             <div class="qty-wrapper">
@@ -80,24 +101,44 @@
                         <button class="checkout-btn" type="button">Checkout</button>
                     </form>
                 </div>
+                <div class="details-box">
+                    <form id="checkoutForm">
+                        <h2>Contact Information</h2>
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" value="<?= $_SESSION['UserFullName'] ?>" placeholder="TechCafe" maxlength="100" required>
+
+                        <label for="address">Email Address</label>
+                        <input type="text" id="address" value="<?= $_SESSION['Email'] ?>" placeholder="techcafe@gmail.com" maxlength="40" required>
+
+                        <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" value="<?= $_SESSION['PhoneNo'] ?>" placeholder="01234567890" maxlength="11" required>
+
+                        <h2>Shipping Details</h2>
+
+                        <label for="address">Shipping Address</label>
+                        <input type="text" id="address" value="<?= $_SESSION['Address'] ?>" placeholder="Shipping Address" maxlength="100" required>
+
+                        <button type="button" id="pay-btn" class="pay-btn">Continue to Payment</button>
+                    </form>
+                </div>
                 <div class="payment-box">
-                    <form>
+                    <form id="paymentForm" method="POST" action="../base.php">
                         <h2>Payment</h2>
 
                         <label for="cardName">Name on Card</label>
-                        <input type="text" id="cardName" placeholder="<?= $_SESSION['Username'] ?>" required>
+                        <input type="text" id="cardName" placeholder="<?= $_SESSION['Username'] ?>" maxlength="15" required>
 
                         <label for="cardNumber">Card Number</label>
-                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="16" required>
 
                         <div class="card-info">
                             <div>
                                 <label for="expiry">Expiry</label>
-                                <input type="text" id="expiry" placeholder="MM/YY" required>
+                                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
                             </div>
                             <div>
                                 <label for="cvv">CVV</label>
-                                <input type="text" id="cvv" placeholder="123" required>
+                                <input type="text" id="cvv" placeholder="123" maxlength="3" required>
                             </div>
                         </div>
 
@@ -105,7 +146,7 @@
                         <p style="font-size: 17px; font-weight: 600;">Total Items: <span id="totalQty"><?= $totalQty ?></span></p>
                         <p style="font-size: 17px; font-weight: 600;">Total: RM <span id="paymentTotal"><?= $subtotal ?></span></p>
                         
-                        <button type="submit" class="pay-btn">Pay Now</button>
+                        <button type="submit" class="pay-btn" name="paid">Pay Now</button>
                     </form>
                 </div>
             </div>
@@ -116,13 +157,16 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const checkout = document.querySelector('.checkout-btn');
-                const paymentBox = document.querySelector('.payment-box');
+                const detailsBox = document.querySelector('.details-box');
                 const cartContainer = document.querySelector('.cart-container');
                 const backBtn = document.getElementById('cartBack');
                 const orderSum = document.getElementById('cartSummary');
+                const paymentBox = document.querySelector('.payment-box');
+                const payBtn = document.getElementById('pay-btn');
+                const form = document.getElementById("paymentForm");
 
                 checkout.addEventListener("click", () => {
-                    paymentBox.classList.add('translated');
+                    detailsBox.classList.add('translated');
                     document.body.classList.add('checkout-mode');
                     document.body.classList.remove('checkout-mode-revert');
                     cartContainer.classList.add('translated');
@@ -131,12 +175,24 @@
                 });
 
                 backBtn.addEventListener("click", () => {
-                    paymentBox.classList.remove('translated');
+                    detailsBox.classList.remove('translated');
                     document.body.classList.remove('checkout-mode');
                     document.body.classList.add('checkout-mode-revert');
                     cartContainer.classList.remove('translated');
+                    paymentBox.classList.remove('translated');
                     backBtn.style.opacity = 0;
                     orderSum.style.opacity = 0;
+                });
+
+                payBtn.addEventListener("click", () => {
+                    paymentBox.classList.add('translated');
+                });
+
+                form.addEventListener("submit", function (e) {
+                    // Check if the form is valid
+                    if (!form.checkValidity()) {
+                        return;
+                    }
                 });
             });
         </script>

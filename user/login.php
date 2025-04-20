@@ -21,11 +21,11 @@
             <div class="loginForm">
                 <form method="POST" action="../base.php">	
                     <div class="inputBox">
-                        <input type="email" name="email" maxlength="40" size="35" required>
+                    <input type="email" name="email" maxlength="40" size="35" placeholder=" " required>
                         <span>Email</span>
                     </div>
                     <div class="inputBox">
-                        <input type="password" name="password" maxLength='20' size="35" required>
+                        <input type="password" name="password" maxLength='20' size="35" placeholder=" " required>
                         <span>Password</span>
                     </div><br>
                     <div>

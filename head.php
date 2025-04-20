@@ -28,6 +28,20 @@
                         <input id="search" class="search-txt" type="text" placeholder="Search Product">
                         <button class="submit"><i class="fas fa-search"></i></button>
                     </div>
+                    <a href="#" id="orderHistoryIcon">
+                        <img src="/images/order-history.png" alt="Order History" width="40">
+                    </a>
+
+                        <!-- Hidden Chatbox -->
+                    <div id="orderHistoryBox" class="chatbox">
+                        <div class="chatbox-header">
+                            <span>Order History</span>
+                            <button id="closeChatbox">×</button>
+                        </div>
+                        <div class="chatbox-body" id="orderHistoryContent">
+                            Loading...
+                        </div>
+                    </div>
 
                     <?php
                         if (isset($_SESSION['Email'])) {
@@ -65,7 +79,26 @@
             document.addEventListener("DOMContentLoaded", function () {
                 const cartIcon = document.getElementById("cart");
                 const cartLink = document.getElementById('cartLink');
-                const hasItems = <?= isset($cartItems) && $cartItems ? 'true' : 'false' ?>;
+                const hasItems = <?= isset($cartItems['ItemsAdded']) && trim($cartItems['ItemsAdded']) !== '' ? 'true' : 'false' ?>;
+                const icon = document.getElementById("orderHistoryIcon");
+                const box = document.getElementById("orderHistoryBox");
+                const close = document.getElementById("closeChatbox");
+                const content = document.getElementById("orderHistoryContent");
+
+                icon.addEventListener("click", (e) => {
+                e.preventDefault();
+                box.classList.add("active");
+
+                // Load order history from PHP (AJAX)
+                fetch("/user/getOrderHistory.php")
+                    .then(res => res.text())
+                    .then(data => content.innerHTML = data)
+                    .catch(err => content.innerHTML = "Unable to load order history.");
+                });
+
+                close.addEventListener("click", () => {
+                    box.classList.remove("active");
+                });
 
                 if (cartIcon) {
                     cartIcon.addEventListener("click", function () {

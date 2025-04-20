@@ -21,23 +21,23 @@
             <div class="loginForm">
                 <form method="POST" action="../base.php">	
                     <div class="inputBox">
-                        <input type="text" name="fullname" maxlength="100" size="35" pattern="^[A-Za-z\s]+$" title="Only letters are allowed." required autofocus>
+                        <input type="text" name="fullname" maxlength="100" size="35" pattern="^[A-Za-z\s]+$" title="Only letters are allowed." placeholder=" " required autofocus>
                         <span>Full Name</span>
                     </div>
                     <div class="inputBox">
-                        <input type="text" name="username" maxlength="15" size="35" required>
+                        <input type="text" name="username" maxlength="15" size="35" placeholder=" " required>
                         <span>Username</span>
                     </div>
                     <div class="inputBox">
-                        <input type="email" name="email" maxlength="100" size="35" required>
+                        <input type="email" name="email" maxlength="100" size="35" placeholder=" " required>
                         <span>Email</span>
                     </div>
                     <div class="inputBox">
-                        <input type="tel" name="phonenumber" maxlength="11" size="35" pattern="01[0-46-9][0-9]{7,8}" title="Start with 01 without -" required>
+                        <input type="tel" name="phonenumber" maxlength="11" size="35" pattern="01[0-46-9][0-9]{7,8}" title="Start with 01 without -" placeholder=" " required>
                         <span>Phone Number</span>
                     </div>
                     <div class="inputBox">
-                        <input type="password" name="password" maxLength='20' size="35" pattern=".{8,}" title="Eight or more characters but less than twenty." required>
+                        <input type="password" name="password" maxLength='20' size="35" pattern=".{8,}" title="Eight or more characters but less than twenty." placeholder=" " required>
                         <span>Password</span>
                     </div><br>
                     <div>

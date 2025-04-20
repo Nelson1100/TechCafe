@@ -400,6 +400,12 @@ footer .bottom-footer p {
     color: white;
 }
 
+.loginForm .inputBox input:not(:placeholder-shown) ~ span {
+    color: white;
+    font-size: 12px;
+    transform: translateY(-20px);
+}
+
 .loginForm .inputBox span {
     position: absolute;
     left: 12%;
@@ -1478,6 +1484,7 @@ select {
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
+    position: relative;
 }
 
 .cart-item img {
@@ -1527,7 +1534,7 @@ select {
     margin-bottom: 20px;
 }
 
-.payment-box {
+.details-box, .payment-box{
     position: fixed;
     right: 0;
     top: 0;
@@ -1535,16 +1542,22 @@ select {
     max-width: 450px;
     height: 100vh;
     background-color: #ffffff;
-    padding: 40px 30px;
+    padding: 20px 30px;
     box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
-    transform: translateX(150%);
     opacity: 0;
     pointer-events: none;
     transition: transform 1.5s ease, opacity 1s ease;
     z-index: 9999;
+    transform: translateX(150%);
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.details-box.translated {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .payment-box.translated {
@@ -1553,21 +1566,20 @@ select {
     pointer-events: auto;
 }
 
-.payment-box h2 {
+.details-box h2, .payment-box h2 {
     margin-bottom: 30px;
     font-size: 28px;
     color: #333;
-    margin-top: -30px;
 }
 
-.payment-box label {
+.details-box label, .payment-box label {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
     color: #444;
 }
 
-.payment-box input[type="text"] {
+.details-box input[type="text"], .payment-box input[type="text"] {
     width: 100%;
     padding: 12px 0px 12px 14px;
     margin-bottom: 20px;
@@ -1578,7 +1590,7 @@ select {
     box-sizing: border-box;
 }
 
-.payment-box input[type="text"]:focus {
+.details-box input[type="text"]:focus, .payment-box input[type="text"]:focus {
     border-color: #007bff;
     outline: none;
 }
@@ -1660,4 +1672,50 @@ body.checkout-mode-revert footer {
 #cartSummary, #cartBack {
     z-index: 1000;
     position: absolute;
+}
+
+.chatbox {
+    position: fixed;
+    bottom: 0px;
+    right: 40px;
+    width: 550px;
+    max-height: 500px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transform: translateY(150%);
+    transition: transform 0.3s ease;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chatbox.active {
+    transform: translateY(0);
+}
+
+.chatbox-header {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbox-body {
+    padding: 15px;
+    overflow-y: auto;
+    max-height: 400px;
+    font-size: 14px;
+}
+
+#closeChatbox {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
 }
