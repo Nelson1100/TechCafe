@@ -127,8 +127,8 @@ if (is_post()) {
             <?= err('ProductPhoto') ?>
 
             <section>
-                <button>Submit</button>
-                <button type="reset">Reset</button>
+                <button class="admin-btn btn-submit">Submit</button>
+                <button type="reset" class="admin-btn btn-reset">Reset</button>
             </section>
         </form>
     </main>

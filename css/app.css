@@ -1178,12 +1178,105 @@ select {
 }
 
 /* ---------------------------- ADMIN TABLE ------------------------------------------ */
-.admin-search {
-    padding-bottom: 20px;
+.admin-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 14px;
+    font-family: Lexend, sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.admin-search input{
-    width: 400px;
+/* Insert Button */
+.btn-insert {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-insert:hover {
+    background-color: #45a049;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Update Button */
+.btn-update {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-update:hover {
+    background-color: #0b7dda;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Delete Button */
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Search Button */
+.btn-search {
+    background-color: #353535;
+    color: white;
+}
+
+.btn-search:hover {
+    background-color: #000000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Submit Button */
+.btn-submit {
+    background-color: #FF9800;
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: #e68900;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Reset Button */
+.btn-reset {
+    background-color: #9E9E9E;
+    color: white;
+}
+
+.btn-reset:hover {
+    background-color: #757575;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Admin Search Bar */
+.admin-search {
+    margin: 15px 0;
+    gap: 10px;
+}
+
+.admin-search input {
+    width: 450px;
+}
+
+.admin-search input[type="search"] {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.admin-search select {
+    padding: 8px 12px;
+    font-size: 14px;
+    width: 150px;
 }
 
 .admin-table {
@@ -1197,7 +1290,7 @@ select {
 
 .admin-table th {
     color: #fff;
-    background: #666;
+    background: #555;
 }
 
 .admin-table tr:hover td {
