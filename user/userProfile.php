@@ -1,5 +1,6 @@
 <?php
 	require '../base.php';
+	
 	if (isset($_SESSION['previousPage'])) {
         $previousPage = $_SESSION['previousPage'];
     }
@@ -44,10 +45,10 @@
 				$address = isset($user['Address']) && $user['Address'] !== null && $user['Address'] !== "" ? $user['Address'] : "-";
 				$profilePic = (isset($user['ProfilePic']) && !empty($user['ProfilePic'])) ? $user['ProfilePic'] : "user.png";
 			?>
-			<form method="POST" action="../base.php">
-				<label for="profileInput" style=" padding-right: 0; text-align: center;">
+			<form method="POST" action="../base.php" enctype="multipart/form-data">
+				<label for="profileInput" style=" padding-right: 0; text-align: center;" onclick="editField('profilePic')">
 					<img id="profilePreview" src="../images/<?= $profilePic ?>" style="margin: 0px; height: 100px; width: 100px; border-radius: 50%;">
-					<br><span onclick="editField('profilePic')" class="editPencil">&#9998; </span>
+					<br><span class="editPencil">&#9998;</span>
 					Profile Picture
 				</label>
 				<input type="file" name="updatePic" id="profileInput" accept="image/*" onchange="loadProfile(event)" hidden>
@@ -55,23 +56,21 @@
 				<h3>USERNAME:</h3>
 				<span class="editPencil" onclick="editField('Username')">&#9998;</span>
 				<span id="UsernameDisplay"><?php echo $user['Username']; ?></span>
-				<input type="text" name="Username" id="UsernameInput" value="<?php echo $user['Username']; ?>" style="display:none;"><br>
+				<input type="text" name="Username" id="UsernameInput" maxlength="15" value="<?php echo $user['Username']; ?>" style="display:none;"><br>
 				<h3>FULL NAME: </h3>
 				<span class="editPencil" onclick="editField('UserFullName')">&#9998;</span>
 				<span id="UserFullNameDisplay"><?php echo $user['UserFullName']; ?></span>
-				<input type="text" name="UserFullName" id="UserFullNameInput" value="<?php echo $user['UserFullName']; ?>" style="display:none;"><br>
+				<input type="text" name="UserFullName" id="UserFullNameInput" maxlength="100" value="<?php echo $user['UserFullName']; ?>" style="display:none;"><br>
 				<h3>EMAIL ADDRESS: </h3>
-				<span class="editPencil" onclick="editField('Email')">&#9998;</span>
-				<span id="EmailDisplay"><?php echo $user['Email']; ?></span>
-				<input type="text" name="Email" id="EmailInput" value="<?php echo $user['Email']; ?>" style="display:none;"><br>
+				<span><?php echo $user['Email']; ?></span>
 				<h3>PHONE NUMBER: </h3>
 				<span class="editPencil" onclick="editField('PhoneNo')">&#9998;</span>
 				<span id="PhoneNoDisplay">0<?php echo $user['PhoneNo']; ?></span>
-				<input type="text" name="PhoneNo" id="PhoneNoInput" value="0<?php echo $user['PhoneNo']; ?>" style="display:none;"><br>
+				<input type="text" name="PhoneNo" id="PhoneNoInput" maxlength="11" value="0<?php echo $user['PhoneNo']; ?>" style="display:none;"><br>
 				<h3>SHIPPING ADDRESS: </h3>
 				<span class="editPencil" onclick="editField('Address')">&#9998;</span>
 				<span id="AddressDisplay"><?php echo $address ?></span>
-				<input type="text" name="Address" id="AddressInput" value="<?php echo $address ?>" style="display:none;"><br>
+				<input type="text" name="Address" id="AddressInput" maxlength="100" value="<?php echo $address ?>" style="display:none;"><br>
 				<div style="display: flex; align-items: center; justify-content: center; height: 60px; margin-top: 20px;">
 					<button name="updateProfile" type="submit" class="button" id="update">Update</button>
 					<button name="logout" type="submit" class="button" id="logout">Log Out</button>
@@ -88,8 +87,11 @@
 			}
 
 			function editField(fieldName){
-				document.getElementById(fieldName + 'Display').style.display = 'none';
-				document.getElementById(fieldName + 'Input').style.display = 'inline';
+				if (fieldName != "profilePic") {
+					document.getElementById(fieldName + 'Display').style.display = 'none';
+					document.getElementById(fieldName + 'Input').style.display = 'inline';
+				}
+
 				document.getElementById('update').classList.add('translated');
 				document.getElementById('logout').classList.add('translated');
 

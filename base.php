@@ -5,7 +5,9 @@ session_start();
 
 if (isset($_SERVER['HTTP_REFERER']) &&
     $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/register.php" &&
-    $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/login.php") {
+    $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/login.php" &&
+	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/userProfile.php" &&
+	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/base.php") {
     
     $_SESSION['previousPage'] = $_SERVER['HTTP_REFERER']; // Store in session
 }
@@ -107,7 +109,7 @@ if (is_post()) {
 		$email = $_POST['email'];
 		$password = SHA1($_POST['password']);
 
-		$stm = $_db->prepare("SELECT UserFullName, Username, PhoneNo, Email, Pass, Roles FROM user WHERE Email = ?");
+		$stm = $_db->prepare("SELECT * FROM user WHERE Email = ?");
 		$stm->execute([$email]);
 		$user = $stm->fetch();
 
@@ -152,6 +154,7 @@ if (is_post()) {
 			$stm = $_db->prepare("INSERT INTO user (UserFullName, Username, PhoneNo, Email, Pass, Roles) VALUES ('$fullname', '$username', '$phonenumber', '$email', SHA1('$password'), 'User')");
 			$stm->execute();
 			$_SESSION['Email'] = $email;
+			$_SESSION['Username'] = $username;
 			echo "<script>alert('Welcome, $username! Your account has been created successfully.');
 			window.location='/user/home.php'</script>";
 		}
@@ -160,53 +163,59 @@ if (is_post()) {
 		header("Location: user/home.php");
 		exit();
 	} else if (isset($_POST['updateProfile'])) {
-		// Get new values from form
-		$new_fullname   = isset($_POST['UserFullName']) ? trim($_POST['UserFullName']) : '';
-		$new_email      = isset($_POST['Email']) ? trim($_POST['Email']) : '';
-		$new_username   = isset($_POST['Username']) ? trim($_POST['Username']) : '';
-		$new_phone      = isset($_POST['PhoneNo']) ? trim($_POST['PhoneNo']) : '';
-		$new_address    = isset($_POST['Address']) ? trim($_POST['Address']) : '';
-
-		// Fetch current user data from database
+		// Get new values
+		$new_fullname = trim($_POST['UserFullName'] ?? '');
+		$new_username = trim($_POST['Username'] ?? '');
+		$new_phone    = trim($_POST['PhoneNo'] ?? '');
+		$new_address  = trim($_POST['Address'] ?? '');
+		$profilePic = isset($_FILES['updatePic']) ? $_FILES['updatePic'] : '';
+	
+		// Get current user
 		$stmt = $_db->prepare("SELECT * FROM user WHERE Email = ?");
 		$stmt->execute([$_SESSION['Email']]);
 		$currentUser = $stmt->fetch();
+	
+		// Use current values if empty
+		$fullname = $new_fullname ?: $currentUser['UserFullName'];
+		$username = $new_username ?: $currentUser['Username'];
+		$phone    = $new_phone    ?: $currentUser['PhoneNo'];
+		$address  = $new_address  ?: $currentUser['Address'];	
+		$noImageUploaded = !($profilePic && $profilePic['error'] === 0);
 
-		// Use current values if input is empty
-		$fullname   = $new_fullname ?: $currentUser['UserFullName'];
-		$email      = $new_email ?: $currentUser['Email'];
-		$username   = $new_username ?: $currentUser['Username'];
-		$phone      = $new_phone ?: $currentUser['PhoneNo'];
-		$address    = $new_address ?: $currentUser['Address'];
-
-		// Update DB
-		$stm = $_db->prepare("UPDATE user SET UserFullName=?, Email=?, Username=?, PhoneNo=?, Address=? WHERE Email=?");
-		$stm->execute([$fullname, $email, $username, $phone, $address, $_SESSION['Email']]);
-
-		// Optional: Update session if email is changed
-		$_SESSION['Email'] = $email;
-
-		echo "<script>alert('Profile updated successfully.'); window.location.href='user/userProfile.php';</script>";
-
-		if ($profilePic) {
-			// Generate a unique filename
-			$filename = uniqid() . "_" . basename($profilePic['name']);
-			$targetDir = 'images/profilePic/';
-			$targetFile = $targetDir . $filename;
-
-			// Save file to server
-			if (move_uploaded_file($profilePic['tmp_name'], $targetFile)) {
-				$photo = 'profilePic/' . $filename;
-
-				// Update DB
-				$stm = $_db->prepare("UPDATE user SET ProfilePic = ? WHERE Email = ?");
-				$stm->execute([$photo, $_SESSION['Email']]);
-				echo "<script>alert('You had successfully changed your profile picture.');
-				window.location='/user/userProfile.php'</script>";
-			} else {
-				echo "<script>alert('Failed to upload image.');
-				window.location='/user/userProfile.php'</script>";
+		if (
+			$fullname == $currentUser['UserFullName'] &&
+			$username == $currentUser['Username'] &&
+			$phone == $currentUser['PhoneNo'] &&
+			$address == $currentUser['Address'] &&
+			$noImageUploaded) {
+			echo "<script>alert('No changes detected in your profile.'); window.location.href='/user/userProfile.php';</script>";
+			return;
+		} else {
+		// Update profile
+			$stm = $_db->prepare("UPDATE user SET UserFullName=?, Username=?, PhoneNo=?, Address=? WHERE Email=?");
+			$stm->execute([$fullname, $username, $phone, $address, $_SESSION['Email']]);
+				
+			// Handle image upload
+			if ($profilePic && $profilePic['error'] === 0) {
+				$allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+				if (in_array($profilePic['type'], $allowedTypes)) {
+					$filename = uniqid() . "_" . basename($profilePic['name']);
+					$targetDir = 'images/profilePic/';
+					$targetFile = $targetDir . $filename;
+			
+					if (move_uploaded_file($profilePic['tmp_name'], $targetFile)) {
+						$photo = 'profilePic/' . $filename;
+			
+						$stm = $_db->prepare("UPDATE user SET ProfilePic = ? WHERE Email = ?");
+						$stm->execute([$photo, $_SESSION['Email']]);
+					} else {
+						echo "<script>alert('Failed to upload image.');
+						window.location='/user/userProfile.php'</script>";
+						return;
+					}
+				}
 			}
+			echo "<script>alert('Profile updated successfully.'); window.location.href='/user/userProfile.php';</script>";
 		}
 	} else if (isset($_POST['addCart'])) {
 		$previousPage = $_SERVER['HTTP_REFERER'];
@@ -220,9 +229,12 @@ if (is_post()) {
 			$quantity = $_POST['product-qty'];
 	
 			if (!$cartItems) {
-				// First time adding to cart
 				$stm = $_db->prepare("INSERT INTO cart (Email, ItemsAdded, Quantity, OrderStatus) VALUES (?, ?, ?, ?)");
 				$stm->execute([$_SESSION['Email'], $specID, $quantity, 'InCart']);
+				echo "<script>alert('Successfully Added'); window.location='$previousPage'</script>";
+			} else if (trim($cartItems['ItemsAdded']) === '') {
+				$stm = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ?, OrderStatus = 'InCart' WHERE Email = ?");
+				$stm->execute([$specID, $quantity, $_SESSION['Email']]);
 				echo "<script>alert('Successfully Added'); window.location='$previousPage'</script>";
 			} else {
 				$currentItemAdded = explode(',', $cartItems['ItemsAdded']);
@@ -281,6 +293,38 @@ if (is_post()) {
 		// Refresh page
 		echo "<script>window.location.href = window.location.href;</script>";
 		exit;
+	} else if (isset($_POST['deleteProduct'])) {
+		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
+		$stm->execute([$_SESSION['Email']]);
+		$cartItems = $stm->fetch();
+		$itemArray = explode(',', $cartItems['ItemsAdded']);
+		$qtyArray = explode(',', $cartItems['Quantity']);
+		$deleteID = $_POST['deleteProduct']; // make sure you get the ID being deleted
+	
+		$index = array_search($deleteID, $itemArray);
+		if ($index !== false) {
+			array_splice($itemArray, $index, 1);
+			array_splice($qtyArray, $index, 1);
+	
+			$updatedItems = implode(',', $itemArray);
+			$updatedQty = implode(',', $qtyArray);
+	
+			$update = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
+			$update->execute([$updatedItems, $updatedQty, $_SESSION['Email']]);
+	
+			// ✅ Check if updatedItems is empty
+			if (trim($updatedItems) !== '') {
+				echo "<script>alert('Item removed from cart.'); window.location='$previousPage';</script>";
+			} else {
+				echo "<script>alert('Item removed from cart.'); window.location='home.php';</script>";
+			}
+			exit;
+		}
+	} else if (isset($_POST['paid'])){
+		$stm = $_db->prepare("UPDATE cart SET OrderStatus = 'Purchased' WHERE Email = ?");
+		$stm->execute([$_SESSION['Email']]);
+		echo "<script>alert('Payment Successful! Thank you for your purchase. Your order has been received and is now being processed.');
+        window.location.href = '/user/home.php';</script>";
 	}
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
