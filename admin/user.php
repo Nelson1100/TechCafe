@@ -2,11 +2,24 @@
 require '../base.php';
 include '../admin_head.php';
 
-// Handle search query
+// Handle search query and role filter
 $search = $_GET['search'] ?? '';
-$stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ?");
-$stm->execute(["%$search%"]);
+$role = $_GET['role'] ?? '';
+
+// Prepare SQL query based on search and role filters
+if (!empty($role)) {
+    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ? AND Roles = ?");
+    $stm->execute(["%$search%", $role]);
+} else {
+    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ?");
+    $stm->execute(["%$search%"]);
+}
 $users = $stm->fetchAll();
+
+// Get all unique roles for the dropdown
+$stm = $_db->prepare("SELECT DISTINCT Roles FROM user ORDER BY Roles");
+$stm->execute();
+$roles = $stm->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -23,13 +36,23 @@ $users = $stm->fetchAll();
         <h1>Admin | User</h1>
 
         <p>
-            <button data-get="user_insert.php">Insert</button>
+            <button data-get="user_insert.php" class="admin-btn btn-insert">Insert</button>
         </p>
         <!-- Search Bar -->
         <form method="get" class="admin-search">
-            <input type="text" name="search" placeholder="Search user..." value="<?= htmlspecialchars($search) ?>">
-            <button type="submit">Search</button>
+            <input type="search" name="search" placeholder="Search user..." value="<?= htmlspecialchars($search) ?>">
+            <select name="role">
+                <option value="">All Roles</option>
+                <?php foreach ($roles as $r): ?>
+                    <option value="<?= htmlspecialchars($r['Roles']) ?>" <?= $role === $r['Roles'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($r['Roles']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="admin-btn btn-search">Search</button>
         </form>
+
+        <p><?= count($users) ?> user(s)</p>
 
         <!-- User List -->
         <table class="admin-table">
@@ -38,7 +61,6 @@ $users = $stm->fetchAll();
                 <th>Username</th>
                 <th>PhoneNo (+60)</th>
                 <th>Email</th>
-                <th>Pass</th>
                 <th>Address</th>
                 <th>Roles</th>
                 <th>Actions</th>
@@ -49,13 +71,12 @@ $users = $stm->fetchAll();
                     <td><?= $u['Username'] ?></td>
                     <td><?= '0' . $u['PhoneNo'] ?></td>
                     <td><?= $u['Email'] ?></td>
-                    <td><?= $u['Pass'] ?></td>
                     <td><?= empty($u['Address']) ? '-' : $u['Address'] ?></td>
                     <td><?= $u['Roles'] ?></td>
-                    <td>
-                        <button data-get="user_update.php?Email=<?= $u['Email'] ?>">Update</button>
-                        <button data-confirm="Confirm Delete Record?" data-post="user_delete.php?Email=<?= $u['Email'] ?>">Delete</button>
-                        <img src="../images/profilePic/<?= htmlspecialchars($u['ProfilePic']) ?? 'user.png'?>" alt="Profile Picture" class="popup-photo popup" width="150" onerror="this.src='../images/user.png'">
+                    <td style="text-align: center;">
+                        <button data-get="user_update.php?Email=<?= $u['Email'] ?>" class="admin-btn btn-update">Update</button>
+                        <button data-confirm="Confirm Delete Record?" data-post="user_delete.php?Email=<?= $u['Email'] ?>" class="admin-btn btn-delete">Delete</button>
+                        <img src="../images/profilePic/<?= htmlspecialchars($u['ProfilePic']) ?? 'user.png' ?>" alt="Profile Picture" class="popup-photo popup" width="150" onerror="this.src='../images/user.png'">
                     </td>
                 </tr>
             <?php endforeach; ?>

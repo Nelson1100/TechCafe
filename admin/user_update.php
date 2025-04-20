@@ -198,9 +198,9 @@ if (is_post()) {
             </label>
             <?= err('ProfilePic') ?>
 
-            <section class="form-buttons">
-                <button>Submit</button>
-                <button type="reset">Reset</button>
+            <section>
+                <button class="admin-btn btn-submit">Submit</button>
+                <button type="reset" class="admin-btn btn-reset">Reset</button>
             </section>
         </form>
     </main>

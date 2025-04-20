@@ -2,16 +2,34 @@
 require '../base.php';
 include '../admin_head.php';
 
-// Handle search query
+// Handle search query and category filter
 $search = $_GET['search'] ?? '';
-$stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ?");
-$stm->execute(["%$search%"]);
+$category = $_GET['category'] ?? '';
+
+// Prepare SQL query based on search and category filters
+if (!empty($category)) {
+    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ? AND Category = ?");
+    $stm->execute(["%$search%", $category]);
+} else {
+    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ?");
+    $stm->execute(["%$search%"]);
+}
 $products = $stm->fetchAll();
 
-// Get specifications for all products at once
-$stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product where ProductName LIKE ?)");
-$stm->execute(["%$search%"]);
+// Get specifications for all products with filters
+if (!empty($category)) {
+    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product WHERE ProductName LIKE ? AND Category = ?)");
+    $stm->execute(["%$search%", $category]);
+} else {
+    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product WHERE ProductName LIKE ?)");
+    $stm->execute(["%$search%"]);
+}
 $all_specs = $stm->fetchAll();
+
+// Get all unique categories for the dropdown
+$stm = $_db->prepare("SELECT DISTINCT Category FROM product ORDER BY Category");
+$stm->execute();
+$categories = $stm->fetchAll();
 
 // Organize specifications by ProductID
 $specs_by_product = [];
@@ -34,13 +52,23 @@ foreach ($all_specs as $spec) {
         <h1>Admin | Product</h1>
 
         <p>
-            <button data-get="product_insert.php">Insert</button>
+            <button data-get="product_insert.php" class="admin-btn btn-insert">Insert</button>
         </p>
         <!-- Search Bar -->
         <form method="get" class="admin-search">
-            <input type="text" name="search" placeholder="Search product..." value="<?= htmlspecialchars($search) ?>">
-            <button type="submit">Search</button>
+            <input type="search" name="search" placeholder="Search product..."  value="<?= htmlspecialchars($search) ?>">
+            <select name="category">
+                <option value="">All Categories</option>
+                <?php foreach ($categories as $c): ?>
+                    <option value="<?= htmlspecialchars($c['Category']) ?>" <?= $category === $c['Category'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($c['Category']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="admin-btn btn-search">Search</button>
         </form>
+
+        <p><?= count($products) ?> product(s)</p>
 
         <!-- Product List -->
         <table class="admin-table">
@@ -59,9 +87,9 @@ foreach ($all_specs as $spec) {
                     <td><?= $p['ProductID'] ?></td>
                     <td><?= $p['ProductName'] ?></td>
                     <td><?= $p['Category'] ?></td>
-                    <td>
-                        <button data-get="product_update.php?ProductID=<?= $p['ProductID'] ?>">Update</button>
-                        <button data-confirm="Confirm Delete Record?" data-post="product_delete.php?ProductID=<?= $p['ProductID'] ?>">Delete</button>
+                    <td style="text-align: center;">
+                        <button data-get="product_update.php?ProductID=<?= $p['ProductID'] ?>" class="admin-btn btn-update">Update</button>
+                        <button data-confirm="Confirm Delete Record?" data-post="product_delete.php?ProductID=<?= $p['ProductID'] ?>" class="admin-btn btn-delete">Delete</button>
                         <img src="../images/product/<?= htmlspecialchars($p['ProductThumb']) ?>" alt="Product Thumbnail" class="popup-photo popup" width="150">
                     </td>
                 </tr>
@@ -94,21 +122,21 @@ foreach ($all_specs as $spec) {
                                                     </div>
                                                 <?php endif; ?>
                                             </td>
-                                            <td>
-                                                <button data-get="spec_update.php?SpecID=<?= $spec['SpecID'] ?>">Update</button>
-                                                <button data-confirm="Confirm Delete Specification?" data-post="spec_delete.php?SpecID=<?= $spec['SpecID'] ?>">Delete</button>
+                                            <td style="text-align: center;">
+                                                <button data-get="spec_update.php?SpecID=<?= $spec['SpecID'] ?>" class="admin-btn btn-update">Update</button>
+                                                <button data-confirm="Confirm Delete Specification?" data-post="spec_delete.php?SpecID=<?= $spec['SpecID'] ?>" class="admin-btn btn-delete">Delete</button>
                                                 <img src="../images/product/<?= htmlspecialchars($spec['ProductPhoto']) ?>" alt="Product Photo" class="popup-photo popup">
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </table>
                                 <p>
-                                    <button data-get="spec_insert.php?ProductID=<?= $p['ProductID'] ?>">Add Specification</button>
+                                    <button data-get="spec_insert.php?ProductID=<?= $p['ProductID'] ?>" class="admin-btn btn-insert">Add Specification</button>
                                 </p>
                             <?php else: ?>
                                 <p>No specification found for this product.</p>
                                 <p>
-                                    <button data-get="spec_insert.php?ProductID=<?= $p['ProductID'] ?>">Add Specification</button>
+                                    <button data-get="spec_insert.php?ProductID=<?= $p['ProductID'] ?>" class="admin-btn btn-insert">Add Specification</button>
                                 </p>
                             <?php endif; ?>
                         </div>
