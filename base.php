@@ -349,8 +349,12 @@ if (is_post()) {
 	$products = $stm->fetchAll();
 }
 
-function printProduct($products)
-{
+function printProduct($products){
+	if (empty($products)){
+		echo "<p style='text-align:center; font-size: 1.5em; color: #666; margin-top: 100px; margin-bottom: 100px;'>No product found.";
+		return;
+	}
+			
 	global $_db;
 	$stm = $_db->prepare("SELECT s.ProductID, s.Specification, s.ProductPhoto, s.Descr, MIN(s.Price) AS MinPrice, MAX(s.Price) AS MaxPrice FROM product p JOIN specification s ON p.ProductID = s.ProductID GROUP BY p.ProductID");
 	$stm->execute();
