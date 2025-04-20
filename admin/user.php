@@ -6,12 +6,19 @@ include '../admin_head.php';
 $search = $_GET['search'] ?? '';
 $role = $_GET['role'] ?? '';
 
+$sort = $_GET['sort'] ?? 'UserFullName'; // default sort
+$dir = strtolower($_GET['dir'] ?? 'asc') === 'desc' ? 'DESC' : 'ASC';
+$allowedSort = ['UserFullName', 'Username', 'PhoneNo', 'Email', 'Address', 'Roles'];
+
+// Validate column name
+$sortCol = in_array($sort, $allowedSort) ? $sort : 'UserFullName';
+
 // Prepare SQL query based on search and role filters
 if (!empty($role)) {
-    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ? AND Roles = ?");
+    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ? AND Roles = ? ORDER BY $sortCol $dir");
     $stm->execute(["%$search%", $role]);
 } else {
-    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ?");
+    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ? ORDER BY $sortCol $dir");
     $stm->execute(["%$search%"]);
 }
 $users = $stm->fetchAll();
@@ -57,12 +64,36 @@ $roles = $stm->fetchAll();
         <!-- User List -->
         <table class="admin-table">
             <tr>
-                <th>UserFullName</th>
-                <th>Username</th>
-                <th>PhoneNo (+60)</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Roles</th>
+                <th>
+                    <a href="?sort=UserFullName&dir=<?= $sort === 'UserFullName' && $dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search) ?>&role=<?= urlencode($role) ?>">
+                        UserFullName <?= $sort === 'UserFullName' ? ($dir === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort=Username&dir=<?= $sort === 'Username' && $dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search) ?>&role=<?= urlencode($role) ?>">
+                        Username <?= $sort === 'Username' ? ($dir === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort=PhoneNo&dir=<?= $sort === 'PhoneNo' && $dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search) ?>&role=<?= urlencode($role) ?>">
+                        PhoneNo (+60) <?= $sort === 'PhoneNo' ? ($dir === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort=Email&dir=<?= $sort === 'Email' && $dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search) ?>&role=<?= urlencode($role) ?>">
+                        Email <?= $sort === 'Email' ? ($dir === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort=Address&dir=<?= $sort === 'Address' && $dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search) ?>&role=<?= urlencode($role) ?>">
+                        Address <?= $sort === 'Address' ? ($dir === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort=Roles&dir=<?= $sort === 'Roles' && $dir === 'ASC' ? 'desc' : 'asc' ?>&search=<?= urlencode($search) ?>&role=<?= urlencode($role) ?>">
+                        Roles <?= $sort === 'Roles' ? ($dir === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
                 <th>Actions</th>
             </tr>
             <?php foreach ($users as $u): ?>

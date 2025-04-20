@@ -1,4 +1,4 @@
-function toggleSpecs(productID) {
+function toggleSpecs(productID, event) {
     const specRow = document.getElementById(`specs-${productID}`);
     const arrow = event.currentTarget;
     
