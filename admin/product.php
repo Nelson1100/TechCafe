@@ -6,22 +6,33 @@ include '../admin_head.php';
 $search = $_GET['search'] ?? '';
 $category = $_GET['category'] ?? '';
 
+$sort1 = $_GET['sort1'] ?? 'ProductID';
+$dir1 = $_GET['dir1'] ?? 'asc';
+$sort2 = $_GET['sort2'] ?? 'SpecID';
+$dir2 = $_GET['dir2'] ?? 'asc';
+$open = req('open'); // Remember the open product ID
+
+if (!in_array($sort1, ['ProductID', 'ProductName', 'Category'])) $sort1 = 'ProductID';
+if (!in_array($dir1, ['asc', 'desc'])) $dir1 = 'asc';
+if (!in_array($sort2, ['SpecID', 'Specification', 'Price', 'Descr'])) $sort2 = 'SpecID';
+if (!in_array($dir2, ['asc', 'desc'])) $dir2 = 'asc';
+
 // Prepare SQL query based on search and category filters
 if (!empty($category)) {
-    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ? AND Category = ?");
+    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ? AND Category = ? ORDER BY $sort1 $dir1");
     $stm->execute(["%$search%", $category]);
 } else {
-    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ?");
+    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ? ORDER BY $sort1 $dir1");
     $stm->execute(["%$search%"]);
 }
 $products = $stm->fetchAll();
 
 // Get specifications for all products with filters
 if (!empty($category)) {
-    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product WHERE ProductName LIKE ? AND Category = ?)");
+    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product WHERE ProductName LIKE ? AND Category = ?) ORDER BY $sort2 $dir2");
     $stm->execute(["%$search%", $category]);
 } else {
-    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product WHERE ProductName LIKE ?)");
+    $stm = $_db->prepare("SELECT * FROM specification WHERE ProductID IN (SELECT ProductID FROM product WHERE ProductName LIKE ?) ORDER BY $sort2 $dir2");
     $stm->execute(["%$search%"]);
 }
 $all_specs = $stm->fetchAll();
@@ -56,7 +67,7 @@ foreach ($all_specs as $spec) {
         </p>
         <!-- Search Bar -->
         <form method="get" class="admin-search">
-            <input type="search" name="search" placeholder="Search product..."  value="<?= htmlspecialchars($search) ?>">
+            <input type="search" name="search" placeholder="Search product..." value="<?= htmlspecialchars($search) ?>">
             <select name="category">
                 <option value="">All Categories</option>
                 <?php foreach ($categories as $c): ?>
@@ -74,15 +85,29 @@ foreach ($all_specs as $spec) {
         <table class="admin-table">
             <tr>
                 <th width="20px"></th>
-                <th>ProductID</th>
-                <th>ProductName</th>
-                <th>Category</th>
+                <th>
+                    <a href="?sort1=ProductID&dir1=<?= $sort1 === 'ProductID' && $dir1 === 'asc' ? 'desc' : 'asc' ?>&sort2=<?= $sort2 ?>&dir2=<?= $dir2 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>">
+                        ProductID <?= $sort1 === 'ProductID' ? (strtoupper($dir1) === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort1=ProductName&dir1=<?= $sort1 === 'ProductName' && $dir1 === 'asc' ? 'desc' : 'asc' ?>&sort2=<?= $sort2 ?>&dir2=<?= $dir2 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>">
+                        ProductName <?= $sort1 === 'ProductName' ? (strtoupper($dir1) === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
+                <th>
+                    <a href="?sort1=Category&dir1=<?= $sort1 === 'Category' && $dir1 === 'asc' ? 'desc' : 'asc' ?>&sort2=<?= $sort2 ?>&dir2=<?= $dir2 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>">
+                        Category <?= $sort1 === 'Category' ? (strtoupper($dir1) === 'ASC' ? '▲' : '▼') : '' ?>
+                    </a>
+                </th>
                 <th>Actions</th>
             </tr>
             <?php foreach ($products as $p): ?>
                 <tr class="admin-row" data-product-id="<?= $p['ProductID'] ?>">
                     <td>
-                        <span class="toggle-arrow" onclick="toggleSpecs('<?= $p['ProductID'] ?>')">&#9658</span>
+                        <span class="toggle-arrow" onclick="toggleSpecs('<?= $p['ProductID'] ?>', event)">
+                            <?= $open == $p['ProductID'] ? '&#9660;' : '&#9658;' ?>
+                        </span>
                     </td>
                     <td><?= $p['ProductID'] ?></td>
                     <td><?= $p['ProductName'] ?></td>
@@ -94,17 +119,33 @@ foreach ($all_specs as $spec) {
                     </td>
                 </tr>
                 <!-- Specifications container -->
-                <tr class="spec-row" id="specs-<?= $p['ProductID'] ?>" style="display: none;">
+                <tr class="spec-row" id="specs-<?= $p['ProductID'] ?>" style="display: <?= ($open == $p['ProductID']) ? 'table-row' : 'none' ?>;">
                     <td colspan="5">
                         <div class="spec-container">
                             <h3>Specifications for <?= $p['ProductName'] ?></h3>
                             <?php if (isset($specs_by_product[$p['ProductID']])): ?>
                                 <table class="spec-table">
                                     <tr>
-                                        <th>SpecID</th>
-                                        <th>Specification</th>
-                                        <th>Price (RM)</th>
-                                        <th>Description</th>
+                                        <th>
+                                            <a href="?sort2=SpecID&dir2=<?= $sort2 === 'SpecID' && $dir2 === 'asc' ? 'desc' : 'asc' ?>&sort1=<?= $sort1 ?>&dir1=<?= $dir1 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&open=<?= $p['ProductID'] ?>">
+                                                SpecID <?= $sort2 === 'SpecID' ? (strtoupper($dir2) === 'ASC' ? '▲' : '▼') : '' ?>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sort2=Specification&dir2=<?= $sort2 === 'Specification' && $dir2 === 'asc' ? 'desc' : 'asc' ?>&sort1=<?= $sort1 ?>&dir1=<?= $dir1 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&open=<?= $p['ProductID'] ?>">
+                                                Specification <?= $sort2 === 'Specification' ? (strtoupper($dir2) === 'ASC' ? '▲' : '▼') : '' ?>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sort2=Price&dir2=<?= $sort2 === 'Price' && $dir2 === 'asc' ? 'desc' : 'asc' ?>&sort1=<?= $sort1 ?>&dir1=<?= $dir1 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&open=<?= $p['ProductID'] ?>">
+                                                Price (RM) <?= $sort2 === 'Price' ? (strtoupper($dir2) === 'ASC' ? '▲' : '▼') : '' ?>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="?sort2=Descr&dir2=<?= $sort2 === 'Descr' && $dir2 === 'asc' ? 'desc' : 'asc' ?>&sort1=<?= $sort1 ?>&dir1=<?= $dir1 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&open=<?= $p['ProductID'] ?>">
+                                                Description <?= $sort2 === 'Descr' ? (strtoupper($dir2) === 'ASC' ? '▲' : '▼') : '' ?>
+                                            </a>
+                                        </th>
                                         <th>Actions</th>
                                     </tr>
                                     <?php foreach ($specs_by_product[$p['ProductID']] as $spec): ?>
