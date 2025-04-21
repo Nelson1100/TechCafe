@@ -1,3 +1,11 @@
+<?php
+// Restrict access to users only
+if (isset($_SESSION['Role']) && $_SESSION['Role'] === 'Admin') {
+    echo "<script>alert('Access denied. Users only.'); window.location='/admin/home.php'</script>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -47,7 +55,7 @@
                         if (isset($_SESSION['Email'])) {
                     ?>
                             <a href="#" id="cartLink"><img src="/images/cart.png" alt="Cart"></a>
-                            <a href="userProfile.php">
+                            <a href="../userProfile.php">
                                 <img src="<?= $user['ProfilePic'] ? '/images/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%;">
                             </a>
                     <?php
