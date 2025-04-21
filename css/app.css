@@ -1314,7 +1314,7 @@ select {
     background: #ccc;
 }
 
-.admin-table .spec-row:hover td {
+.admin-table .toggle-row:hover td {
     background: transparent;
 }
 
@@ -1359,41 +1359,41 @@ select {
 .arrow-down {
     transform: rotate(90deg);
 }
-.spec-container {
+.toggle-container {
     display: block;
     padding: 15px;
     background: #f8f8f8;
 }
 
-.spec-row {
+.toggle-row {
     display: none;
 }
 
-.spec-table {
+.toggle-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 15px;
 }
 
-.spec-table th {
+.toggle-table th {
     color: #fff;
     padding-top: 11px;
     padding-bottom: 11px;
 }
 
-.spec-table th a {
+.toggle-table th a {
     color: #000;
 }
 
-.spec-table tr:hover {
+.toggle-table tr:hover {
     background: #e0e0e0;
 }
 
-.spec-table td:has(.popup-photo) {
+.toggle-table td:has(.popup-photo) {
     position: relative;
 }
 
-.spec-table .popup {
+.toggle-table .popup {
     position: absolute;
     top: 50%;
     left: 100%;
@@ -1403,16 +1403,16 @@ select {
     display: none;
 }
 
-.spec-table tr:hover td .popup {
+.toggle-table tr:hover td .popup {
     display: block;
 }
 
-.spec-table th, .spec-table td {
+.toggle-table th, .toggle-table td {
     border: 1px solid #000;
     padding: 6px;
 }
 
-.spec-table th {
+.toggle-table th {
     background-color: #f0f0f0;
     color: #000;
 }

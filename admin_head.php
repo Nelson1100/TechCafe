@@ -29,7 +29,20 @@ if ($_SESSION['Role'] !== 'Admin') {
                 <h3 id="greeting">Welcome to the Admin Page</h3>
             </div>
             <div id="header-icons-right" class="header-icons">
-                <a href="/admin/adminProfile.php"><img src="/images/user.png" alt="User Profile"></a>
+                <?php
+                if (isset($_SESSION['Email'])) {
+                ?>
+                    <a href="../userProfile.php">
+                        <img src="<?= $user['ProfilePic'] ? '/images/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%;">
+                    </a>
+                <?php
+                } else {
+                ?>
+                    <img src="/images/user.png" alt="User Profile" style="border-radius: 50%;">
+                    </a>
+                <?php
+                }
+                ?>
             </div>
 
             <nav id="navigationBar">

@@ -105,7 +105,7 @@ foreach ($all_specs as $spec) {
             <?php foreach ($products as $p): ?>
                 <tr class="admin-row" data-product-id="<?= $p['ProductID'] ?>">
                     <td>
-                        <span class="toggle-arrow" onclick="toggleSpecs('<?= $p['ProductID'] ?>', event)">
+                        <span class="toggle-arrow" onclick="toggleTable('<?= $p['ProductID'] ?>', event)">
                             <?= $open == $p['ProductID'] ? '&#9660;' : '&#9658;' ?>
                         </span>
                     </td>
@@ -119,12 +119,12 @@ foreach ($all_specs as $spec) {
                     </td>
                 </tr>
                 <!-- Specifications container -->
-                <tr class="spec-row" id="specs-<?= $p['ProductID'] ?>" style="display: <?= ($open == $p['ProductID']) ? 'table-row' : 'none' ?>;">
+                <tr class="toggle-row" id="toggle-<?= $p['ProductID'] ?>" style="display: <?= ($open == $p['ProductID']) ? 'table-row' : 'none' ?>;">
                     <td colspan="5">
-                        <div class="spec-container">
+                        <div class="toggle-container">
                             <h3>Specifications for <?= $p['ProductName'] ?></h3>
                             <?php if (isset($specs_by_product[$p['ProductID']])): ?>
-                                <table class="spec-table">
+                                <table class="toggle-table">
                                     <tr>
                                         <th>
                                             <a href="?sort2=SpecID&dir2=<?= $sort2 === 'SpecID' && $dir2 === 'asc' ? 'desc' : 'asc' ?>&sort1=<?= $sort1 ?>&dir1=<?= $dir1 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&open=<?= $p['ProductID'] ?>">

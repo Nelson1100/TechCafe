@@ -1,13 +1,13 @@
-function toggleSpecs(productID, event) {
-    const specRow = document.getElementById(`specs-${productID}`);
+function toggleTable(ID, event) {
+    const tableRow = document.getElementById(`toggle-${ID}`);
     const arrow = event.currentTarget;
     
-    if (specRow.style.display === 'table-row') {
-        specRow.style.display = 'none';
+    if (tableRow.style.display === 'table-row') {
+        tableRow.style.display = 'none';
         arrow.classList.remove('arrow-down');
         arrow.innerHTML = '&#9658;'; // Right arrow
     } else {
-        specRow.style.display = 'table-row';
+        tableRow.style.display = 'table-row';
         arrow.classList.add('arrow-down');
         arrow.innerHTML = '&#9658;'; // Still right arrow but rotated with CSS
     }
