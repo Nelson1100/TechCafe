@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-row">
                 <label for="service">Please Choose Your Service:</label>
                 <select name="service" id="service" required style="flex: 1;">
-                    <option value="">Select Service</option>
+                    <option value="">- Select One -</option>
                     <option value="Coworking Space">Co-working Space</option>
                     <option value="Keyboard Disassembly">Keyboard Disassembly Service</option>
                     <option value="Keyboard Cleaning">Keyboard Cleaning Service</option>
@@ -177,7 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <br>
-        <?php include '../foot.php'; 
+        <?php 
+        include '../foot.php'; 
         ?>
     </main>
 
