@@ -12,9 +12,9 @@
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>User Profile</title>
-	<link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="../css/app.css">
 	<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="icon" type="image/x-icon" href="images/TechCafe.png">
+	<link rel="icon" type="image/x-icon" href="../images/TechCafe.png">
 	<style>
 		h3 {
 			margin-bottom: 0px;
@@ -38,16 +38,16 @@
 		}
 	</style>
 </head>
-<a href="<?= $previousPage ?>" style="width: fit-content;"><img src="images/back.png" alt="Back Button"></a>
+<a href="<?= $previousPage ?>" style="width: fit-content;"><img src="../images/back.png" alt="Back Button"></a>
 	<main class="signPage" style="width: 450px;">
 		<body class="signBackground">
 			<?php
 				$address = isset($user['Address']) && $user['Address'] !== null && $user['Address'] !== "" ? $user['Address'] : "-";
 				$profilePic = (isset($user['ProfilePic']) && !empty($user['ProfilePic'])) ? $user['ProfilePic'] : "user.png";
 			?>
-			<form method="POST" action="base.php" enctype="multipart/form-data">
+			<form method="POST" action="../base.php" enctype="multipart/form-data">
 				<label for="profileInput" style=" padding-right: 0; text-align: center;" onclick="editField('profilePic')">
-					<img id="profilePreview" src="images/<?= $profilePic ?>" style="margin: 0px; height: 100px; width: 100px; border-radius: 50%;">
+					<img id="profilePreview" src="../images/<?= $profilePic ?>" style="margin: 0px; height: 100px; width: 100px; border-radius: 50%;">
 					<br><span class="editPencil">&#9998;</span>
 					Profile Picture
 				</label>

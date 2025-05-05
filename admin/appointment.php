@@ -148,11 +148,10 @@ $services = $stm->fetchAll();
                 </tr>
             <?php endforeach; ?>
         </table>
-
     </main>
     
     <?php
-    include '../admin_foot.php';
+        include '../admin_foot.php';
     ?>
 </body>
 </html>

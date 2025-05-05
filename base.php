@@ -6,7 +6,7 @@ session_start();
 if (isset($_SERVER['HTTP_REFERER']) &&
     $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/register.php" &&
     $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/login.php" &&
-	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/userProfile.php" &&
+	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/userProfile.php" &&
 	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/base.php") {
     
     $_SESSION['previousPage'] = $_SERVER['HTTP_REFERER']; // Store in session
@@ -54,6 +54,41 @@ function temp($key, $value = null)
 	}
 }
 
+// function to check availability FROM DB
+function is_exists($value, $table, $field) {
+    global $_db;
+    $stm = $_db->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
+    $stm->execute([$value]);
+    return $stm->fetchColumn() > 0;
+}
+
+function is_email($value) {
+    return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+//Encoding function for passwords
+function encode($value) {
+    return htmlentities($value);
+}
+
+function get_mail() {
+    require_once 'PHPMailer.php';
+    require_once 'SMTP.php';
+
+    $m = new PHPMailer(true);
+    $m->isSMTP();
+    $m->SMTPAuth = true;
+    $m->Host = 'smtp.gmail.com';
+    $m->Port = 587;
+	// Haven't created an account to use yet
+    $m->Username = 'desmund.demo@gmail.com';
+    $m->Password = 'ivtm oili ftsb rbxf';
+    $m->CharSet = 'utf-8';
+    $m->setFrom($m->Username, 'Tech Cafe');
+
+    return $m;
+}
+
 // Obtain uploaded file --> cast to object
 function get_file($key)
 {
@@ -78,6 +113,10 @@ function save_photo($f, $folder, $width = 200, $height = 200)
 		->toFile("$folder/$photo", 'image/jpeg');
 
 	return $photo;
+}
+
+function base($path = '') {
+    return "http://$_SERVER[SERVER_NAME]:$_SERVER[SERVER_PORT]/$path";
 }
 
 // Is unique?
@@ -188,7 +227,7 @@ if (is_post()) {
 			$phone == $currentUser['PhoneNo'] &&
 			$address == $currentUser['Address'] &&
 			$noImageUploaded) {
-			echo "<script>alert('No changes detected in your profile.'); window.location.href='/userProfile.php';</script>";
+			echo "<script>alert('No changes detected in your profile.'); window.location.href='/user/userProfile.php';</script>";
 			return;
 		} else {
 		// Update profile
@@ -210,12 +249,12 @@ if (is_post()) {
 						$stm->execute([$photo, $_SESSION['Email']]);
 					} else {
 						echo "<script>alert('Failed to upload image.');
-						window.location='/userProfile.php'</script>";
+						window.location='/user/userProfile.php'</script>";
 						return;
 					}
 				}
 			}
-			echo "<script>alert('Profile updated successfully.'); window.location.href='/userProfile.php';</script>";
+			echo "<script>alert('Profile updated successfully.'); window.location.href='/user/userProfile.php';</script>";
 		}
 	} else if (isset($_POST['addCart'])) {
 		$previousPage = $_SERVER['HTTP_REFERER'];
@@ -420,7 +459,7 @@ function err($key)
 {
 	global $_err;
 	if ($_err[$key] ?? false) {
-		echo "<span class='err'>&nbsp;&nbsp;&nbsp;$_err[$key]</span>";
+		echo "<span class='err'>$_err[$key]</span>";
 	} else {
 		echo '<span></span>';
 	}

@@ -19,7 +19,7 @@
                         <h2>Level Up Your Life: Tech Solutions & Cozy Comforts</h2>
                         <p>Discover a unique blend of cutting-edge technology and cozy cafe vibes.</p>
                         <img src="../images/banners/services.png" alt="Banner">
-                        <p style="height: 500px; margin-bottom: -50px;"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15886.964471486686!2d100.28517873972841!3d5.456206442170408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304ac2c0305a5483%3A0xfeb1c7560c785259!2sTAR%20UMT%20Penang%20Branch!5e0!3m2!1sen!2smy!4v1745160883111!5m2!1sen!2smy" style="border:0; width:94%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></p>
+                        <p style="height: 500px; margin-bottom: -50px;"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15886.964471486686!2d100.28517873972841!3d5.456206442170408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x304ac2c0305a5483%3A0xfeb1c7560c785259!2sTAR%20UMT%20Penang%20Branch!5e0!3m2!1sen!2smy!4v1745160883111!5m2!1sen!2smy" style="border:0; width:94%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" preload></iframe></p>
                     </div>
                     <div class="service-boxes">
                         <div class="service-box">
