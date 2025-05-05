@@ -19,11 +19,22 @@ if (!in_array($dir2, ['asc', 'desc'])) $dir2 = 'asc';
 
 // Prepare SQL query based on search and role filters
 if (!empty($role)) {
-    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ? AND Roles = ? ORDER BY $sort1 $dir1");
-    $stm->execute(["%$search%", $role]);
+    $stm = $_db->prepare("
+        SELECT * FROM user 
+        WHERE 
+            (UserFullName LIKE ? OR Username LIKE ? OR PhoneNo LIKE ? OR Email LIKE ?) 
+            AND Roles = ? 
+        ORDER BY $sort1 $dir1
+    ");
+    $stm->execute(["%$search%", "%$search%", "%$search%", "%$search%", $role]);
 } else {
-    $stm = $_db->prepare("SELECT * FROM user WHERE UserFullName LIKE ? ORDER BY $sort1 $dir1");
-    $stm->execute(["%$search%"]);
+    $stm = $_db->prepare("
+        SELECT * FROM user 
+        WHERE 
+            UserFullName LIKE ? OR Username LIKE ? OR PhoneNo LIKE ? OR Email LIKE ? 
+        ORDER BY $sort1 $dir1
+    ");
+    $stm->execute(["%$search%", "%$search%", "%$search%", "%$search%"]);
 }
 $users = $stm->fetchAll();
 

@@ -128,7 +128,7 @@ if (is_post()) {
 			$username = $user['Username'];
 			if ($user['Roles'] === 'Admin') {
 				echo "<script>alert('Welcome Admin! $username');
-				window.location='/admin/home.php'</script>";
+				window.location='/admin/product.php'</script>";
 			} else {
 				echo "<script>alert('Welcome back! $username');
 				window.location='/user/home.php'</script>";

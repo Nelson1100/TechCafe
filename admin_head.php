@@ -25,7 +25,7 @@ if ($_SESSION['Role'] !== 'Admin') {
     <header>
         <div class="header-container" id="header">
             <div id="header-icons-left" class="header-icons">
-                <a href="/admin/home.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
+                <a href="/admin/product.php"><img src="/images/TechCafe.png" alt="Tech Café"></a>
                 <h3 id="greeting">Welcome to the Admin Page</h3>
             </div>
             <div id="header-icons-right" class="header-icons">
@@ -47,9 +47,9 @@ if ($_SESSION['Role'] !== 'Admin') {
 
             <nav id="navigationBar">
                 <ul>
-                    <li><a href="/admin/home.php">Home</a></li>
                     <li><a href="/admin/product.php">Product</a></li>
                     <li><a href="/admin/user.php">User</a></li>
+                    <li><a href="/admin/appointment.php">Appointment</a></li>
                 </ul>
             </nav>
         </div>
