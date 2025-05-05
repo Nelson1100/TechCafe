@@ -1287,6 +1287,7 @@ select {
 
 .admin-table {
     border-collapse: collapse;
+    max-width: 90%;
 }
 
 .admin-table th, .admin-table td {
