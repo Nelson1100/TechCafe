@@ -126,7 +126,7 @@ foreach ($all_orders as $order) {
                         Roles <?= $sort1 === 'Roles' ? (strtoupper($dir1) === 'ASC' ? '▲' : '▼') : '' ?>
                     </a>
                 </th>
-                <th>Actions</th>
+                <th width="170px">Actions</th>
             </tr>
             <?php foreach ($users as $u): ?>
                 <tr class="admin-row">
