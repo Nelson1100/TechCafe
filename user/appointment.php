@@ -31,17 +31,17 @@
                     <label for="service">Please Choose Your Service:</label>
                     <select name="service" id="service" required style="flex: 1;">
                         <option value="">Select Service</option>
-                        <option value="coworking">Co-working Space</option>
-                        <option value="keyboard_disassembly">Keyboard Disassembly Service</option>
-                        <option value="keyboard_cleaning">Keyboard Cleaning Service</option>
-                        <option value="keyboard_desoldering">Whole Keyboard Desoldering/Soldering Service</option>
-                        <option value="keyboard_building">Keyboard Building Service (Hotswap)</option>
-                        <option value="switch_desoldering">Repairing Switch Desoldering/Soldering Service</option>
-                        <option value="turbocharge">Turbocharge Performance Service</option>
-                        <option value="virus_removal">Conquer Virus Service</option>
-                        <option value="data_recovery">Rescue Lost Data Service</option>
-                        <option value="fix_glitch">Fix Any Glitch Service</option>
-                        <option value="pc_building">PC Building Service</option>
+                        <option value="Coworking Space">Co-working Space</option>
+                        <option value="Keyboard Disassembly">Keyboard Disassembly Service</option>
+                        <option value="Keyboard Cleaning">Keyboard Cleaning Service</option>
+                        <option value="Keyboardd Soldering">Whole Keyboard Desoldering/Soldering Service</option>
+                        <option value="Keyboard Build">Keyboard Building Service (Hotswap)</option>
+                        <option value="Switch Fix">Repairing Switch Desoldering/Soldering Service</option>
+                        <option value="Turbocharge">Turbocharge Performance Service</option>
+                        <option value="Virus Removal">Conquer Virus Service</option>
+                        <option value="Data Recovery">Rescue Lost Data Service</option>
+                        <option value="Glitch Fix">Fix Any Glitch Service</option>
+                        <option value="PC Build">PC Building Service</option>
                     </select>
                 </div>
                 <div class="form-row">
