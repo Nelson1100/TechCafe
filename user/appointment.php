@@ -177,7 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <br>
-        <?php include '../foot.php'; ?>
+        <?php include '../foot.php'; 
+        ?>
     </main>
 
 </body>
