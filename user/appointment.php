@@ -27,7 +27,7 @@
                     <label for="email">Email (Optional):</label>
                     <input type="email" name="email" id="email" style="flex: 1;">
                 </div>
-                    <div class="form-row">
+                <div class="form-row">
                     <label for="service">Please Choose Your Service:</label>
                     <select name="service" id="service" required style="flex: 1;">
                         <option value="">Select Service</option>

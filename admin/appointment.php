@@ -137,7 +137,20 @@ $services = $stm->fetchAll();
                     <td><?= $a['phone'] ?></td>
                     <td><?= empty($a['email']) ? '-' : $a['email'] ?></td>
                     <td><?= $a['service'] ?></td>
-                    <td><?= empty($a['problem_description']) ? '-' : $a['problem_description'] ?></td>
+                    <td class="description-cell" onclick="toggleDescription(this)">
+                    <?php if (empty($a['problem_description'])): ?>
+                        -
+                    <?php else: ?>
+                        <div class="description-truncated">
+                            <?= substr($a['problem_description'], 0, 10) ?><?= strlen($a['problem_description']) > 10 ? '...' : '' ?>
+                        </div>
+                        <?php if (strlen($a['problem_description']) > 10): ?>
+                            <div class="description-full">
+                                <?= htmlspecialchars($a['problem_description']) ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    </td>
                     <td><?= $a['appointment_date'] ?></td>
                     <td><?= $a['appointment_time'] ?></td>
                     <td><?= $a['created_at'] ?></td>
