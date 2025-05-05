@@ -46,7 +46,7 @@
                 </div>
             </div>
             </section>
-            <section class="hidden1">
+        <section class="hidden1">
             <div class="banner">
                 <div class="banner-content">
                     <h2>Cafe</h2>

@@ -21,7 +21,7 @@
             <div class="loginForm">
                 <form method="POST" action="../base.php">	
                     <div class="inputBox">
-                    <input type="email" name="email" maxlength="40" size="35" placeholder=" " required>
+                    <input type="email" name="email" maxlength="40" size="35" placeholder=" " required autofocus>
                         <span>Email</span>
                     </div>
                     <div class="inputBox">
@@ -31,7 +31,8 @@
                     <div>
                         <button name="login" type="submit" class="button">Sign In</button>
                     </div><br>
-                    Don't have an account ?<a href="register.php"><b>&nbsp;&nbsp; Register</b></a>
+                    Don't have an account ?<a href="register.php"><b>&nbsp;&nbsp; Register</b></a><br>
+                    <a href="resetEmail.php"><b><br> Forgot Password? </b></a><br>
                 </form>
             </div>
         </body>
