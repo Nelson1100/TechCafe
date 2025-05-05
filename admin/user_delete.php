@@ -14,6 +14,8 @@ if (is_post()) {
     unlink("../images/user/$photo");
 
     // Delete record from DB
+    $stm = $_db->prepare('DELETE FROM cart WHERE Email = ?');
+    $stm->execute([$Email]);
     $stm = $_db->prepare('DELETE FROM user WHERE Email = ?');
     $stm->execute([$Email]);
     temp('info', 'User record deleted');
