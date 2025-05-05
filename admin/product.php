@@ -19,11 +19,22 @@ if (!in_array($dir2, ['asc', 'desc'])) $dir2 = 'asc';
 
 // Prepare SQL query based on search and category filters
 if (!empty($category)) {
-    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ? AND Category = ? ORDER BY $sort1 $dir1");
-    $stm->execute(["%$search%", $category]);
+    $stm = $_db->prepare("
+        SELECT * FROM product 
+        WHERE 
+            (ProductName LIKE ? OR ProductID LIKE ?) 
+            AND Category = ? 
+        ORDER BY $sort1 $dir1
+    ");
+    $stm->execute(["%$search%", "%$search%", $category]);
 } else {
-    $stm = $_db->prepare("SELECT * FROM product WHERE ProductName LIKE ? ORDER BY $sort1 $dir1");
-    $stm->execute(["%$search%"]);
+    $stm = $_db->prepare("
+        SELECT * FROM product 
+        WHERE 
+            ProductName LIKE ? OR ProductID LIKE ? 
+        ORDER BY $sort1 $dir1
+    ");
+    $stm->execute(["%$search%", "%$search%"]);
 }
 $products = $stm->fetchAll();
 

@@ -1,7 +1,7 @@
 <?php
 // Restrict access to users only
 if (isset($_SESSION['Role']) && $_SESSION['Role'] === 'Admin') {
-    echo "<script>alert('Access denied. Users only.'); window.location='/admin/home.php'</script>";
+    echo "<script>alert('Access denied. Users only.'); window.location='/admin/product.php'</script>";
     exit;
 }
 ?>
