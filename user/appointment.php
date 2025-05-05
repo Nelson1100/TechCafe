@@ -143,7 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-row">
                 <label for="service">Please Choose Your Service:</label>
                 <select name="service" id="service" required style="flex: 1;">
-                <option value="Coworking Space">Co-working Space</option>
+                    <option value="">- Select One -</option>
+                    <option value="Coworking Space">Co-working Space</option>
                     <option value="Keyboard Disassembly">Keyboard Disassembly Service</option>
                     <option value="Keyboard Cleaning">Keyboard Cleaning Service</option>
                     <option value="Keyboardd Soldering">Whole Keyboard Desoldering/Soldering Service</option>
