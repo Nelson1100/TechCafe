@@ -8,6 +8,7 @@ if (is_post()) {
     $Specification = req('Specification');
     $Price = req('Price');
     $Descr = req('Descr');
+    $InventoryLevel = req('InventoryLevel');
     $f = get_file('ProductPhoto');
 
     // SpecID Validation
@@ -41,6 +42,15 @@ if (is_post()) {
         $_err['Descr'] = 'Required';
     }
 
+    // InventoryLevel Validation
+    if ($InventoryLevel == '') {
+        $_err['InventoryLevel'] = 'Required';
+    } else if (!ctype_digit($InventoryLevel)) {
+        $_err['InventoryLevel'] = 'Must be a whole number';
+    } else if ((int)$InventoryLevel > 99999) {
+        $_err['InventoryLevel'] = 'Must between 0 - 99999';
+    }
+
     // ProductPhoto Validation
     if (!$f) {
         $_err['ProductPhoto'] = 'Required';
@@ -57,10 +67,10 @@ if (is_post()) {
         $photo = save_photo($f, '../images/product');
 
         $stm = $_db->prepare('
-            INSERT INTO specification (SpecID, ProductID, Specification, Price, Descr, ProductPhoto)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO specification (SpecID, ProductID, Specification, Price, Descr, InventoryLevel, ProductPhoto)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ');
-        $stm->execute([$SpecID, $ProductID, $Specification, $Price, $Descr, $photo]);
+        $stm->execute([$SpecID, $ProductID, $Specification, $Price, $Descr, $InventoryLevel, $photo]);
 
         temp('info', 'Specification record inserted');
         redirect('product.php');
@@ -96,6 +106,10 @@ if (is_post()) {
             <label for="Descr">Description</label>
             <textarea id="Descr" name="Descr" rows="7" cols="30" value="<?= old('Descr') ?>" required></textarea>
             <?= err('Descr') ?>
+
+            <label for="InventoryLevel">InventoryLevel</label>
+            <input type="number" id="InventoryLevel" name="InventoryLevel" min="0" max="99999" step="1" value="<?= old('InventoryLevel') ?>">
+            <?= err('InventoryLevel') ?>
 
             <label for="ProductPhoto">ProductPhoto</label>
             <label class="upload" tabindex="0">

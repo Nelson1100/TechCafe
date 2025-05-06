@@ -14,7 +14,7 @@ $open = req('open'); // Remember the open product ID
 
 if (!in_array($sort1, ['ProductID', 'ProductName', 'Category'])) $sort1 = 'ProductID';
 if (!in_array($dir1, ['asc', 'desc'])) $dir1 = 'asc';
-if (!in_array($sort2, ['SpecID', 'Specification', 'Price', 'Descr'])) $sort2 = 'SpecID';
+if (!in_array($sort2, ['SpecID', 'Specification', 'Price', 'Descr', 'InventoryLevel'])) $sort2 = 'SpecID';
 if (!in_array($dir2, ['asc', 'desc'])) $dir2 = 'asc';
 
 // Prepare SQL query based on search and category filters
@@ -157,6 +157,11 @@ foreach ($all_specs as $spec) {
                                                 Description <?= $sort2 === 'Descr' ? (strtoupper($dir2) === 'ASC' ? '▲' : '▼') : '' ?>
                                             </a>
                                         </th>
+                                        <th>
+                                            <a href="?sort2=InventoryLevel&dir2=<?= $sort2 === 'InventoryLevel' && $dir2 === 'asc' ? 'desc' : 'asc' ?>&sort1=<?= $sort1 ?>&dir1=<?= $dir1 ?>&search=<?= urlencode($search) ?>&category=<?= urlencode($category) ?>&open=<?= $p['ProductID'] ?>">
+                                                InventoryLevel <?= $sort2 === 'InventoryLevel' ? (strtoupper($dir2) === 'ASC' ? '▲' : '▼') : '' ?>
+                                            </a>
+                                        </th>
                                         <th>Actions</th>
                                     </tr>
                                     <?php foreach ($specs_by_product[$p['ProductID']] as $spec): ?>
@@ -174,6 +179,7 @@ foreach ($all_specs as $spec) {
                                                     </div>
                                                 <?php endif; ?>
                                             </td>
+                                            <td><?= $spec['InventoryLevel'] ?></td>
                                             <td style="text-align: center;">
                                                 <button data-get="spec_update.php?SpecID=<?= $spec['SpecID'] ?>" class="admin-btn btn-update">Update</button>
                                                 <button data-confirm="Confirm Delete Specification?" data-post="spec_delete.php?SpecID=<?= $spec['SpecID'] ?>" class="admin-btn btn-delete">Delete</button>
