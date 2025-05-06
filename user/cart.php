@@ -160,44 +160,44 @@
         </body>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-            const checkout = document.querySelector('.checkout-btn');
-            const detailsBox = document.querySelector('.details-box');
-            const cartContainer = document.querySelector('.cart-container');
-            const backBtn = document.getElementById('cartBack');
-            const orderSum = document.getElementById('cartSummary');
-            const paymentBox = document.querySelector('.payment-box');
-            const payBtn = document.getElementById('pay-btn');
-            const form = document.getElementById("paymentForm");
-            const addressInput = document.getElementById("shippingAddress"); // Updated to unique ID
+                const checkout = document.querySelector('.checkout-btn');
+                const detailsBox = document.querySelector('.details-box');
+                const cartContainer = document.querySelector('.cart-container');
+                const backBtn = document.getElementById('cartBack');
+                const orderSum = document.getElementById('cartSummary');
+                const paymentBox = document.querySelector('.payment-box');
+                const payBtn = document.getElementById('pay-btn');
+                const form = document.getElementById("paymentForm");
+                const addressInput = document.getElementById("shippingAddress"); // Updated to unique ID
 
-            checkout.addEventListener("click", () => {
-                detailsBox.classList.add('translated');
-                document.body.classList.add('checkout-mode');
-                document.body.classList.remove('checkout-mode-revert');
-                cartContainer.classList.add('translated');
-                backBtn.style.opacity = 1;
-                orderSum.style.opacity = 1;
-            });
+                checkout.addEventListener("click", () => {
+                    detailsBox.classList.add('translated');
+                    document.body.classList.add('checkout-mode');
+                    document.body.classList.remove('checkout-mode-revert');
+                    cartContainer.classList.add('translated');
+                    backBtn.style.opacity = 1;
+                    orderSum.style.opacity = 1;
+                });
 
-            backBtn.addEventListener("click", () => {
-                detailsBox.classList.remove('translated');
-                document.body.classList.remove('checkout-mode');
-                document.body.classList.add('checkout-mode-revert');
-                cartContainer.classList.remove('translated');
-                paymentBox.classList.remove('translated');
-                backBtn.style.opacity = 0;
-                orderSum.style.opacity = 0;
-            });
+                backBtn.addEventListener("click", () => {
+                    detailsBox.classList.remove('translated');
+                    document.body.classList.remove('checkout-mode');
+                    document.body.classList.add('checkout-mode-revert');
+                    cartContainer.classList.remove('translated');
+                    paymentBox.classList.remove('translated');
+                    backBtn.style.opacity = 0;
+                    orderSum.style.opacity = 0;
+                });
 
-            payBtn.addEventListener("click", () => {
-                // Check if the shipping address is not empty
-                if (addressInput.value.trim() !== "") {
-                    // Add class to trigger animation/transition for the payment box
-                    paymentBox.classList.add('translated');
-                } else {
-                    alert("Please enter a shipping address.");
-                }
-            });
+                payBtn.addEventListener("click", () => {
+                    // Check if the shipping address is not empty
+                    if (addressInput.value.trim() !== "") {
+                        // Add class to trigger animation/transition for the payment box
+                        paymentBox.classList.add('translated');
+                    } else {
+                        alert("Please enter a shipping address.");
+                    }
+                });
 
                 form.addEventListener("submit", function (e) {
                     // Check if the form is valid

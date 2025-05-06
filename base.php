@@ -243,7 +243,7 @@ if (is_post()) {
 					$targetFile = $targetDir . $filename;
 			
 					if (move_uploaded_file($profilePic['tmp_name'], $targetFile)) {
-						$photo = 'profilePic/' . $filename;
+						$photo = $filename;
 			
 						$stm = $_db->prepare("UPDATE user SET ProfilePic = ? WHERE Email = ?");
 						$stm->execute([$photo, $_SESSION['Email']]);
@@ -359,7 +359,7 @@ if (is_post()) {
 								echo "<script>alert('Not enough stock.'); window.location.href = window.location.href;</script>";
 								exit;
 							}
-						} elseif ($operation == 'deduct' && $quantities[$i] > 1) {
+						} else if ($operation == 'deduct' && $quantities[$i] > 1) {
 							$quantities[$i]--;
 						}
 						break;
