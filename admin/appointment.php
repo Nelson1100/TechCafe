@@ -2,6 +2,14 @@
 require '../base.php';
 include '../admin_head.php';
 
+// Updates status when page loads, to see if appointment date already passes. Pass = Completed
+$_db->query("
+    UPDATE appointment 
+    SET status = 'Completed' 
+    WHERE status = 'Pending' 
+    AND CONCAT(appointment_date, ' ', appointment_time) < NOW()"
+);
+
 // Handle search query and service filter
 $search = $_GET['search'] ?? '';
 $service = $_GET['service'] ?? '';
