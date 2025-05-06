@@ -48,7 +48,7 @@
 			?>
 			<form method="POST" action="../base.php" enctype="multipart/form-data">
 				<label for="profileInput" style=" padding-right: 0; text-align: center;" onclick="editField('profilePic')">
-					<img id="profilePreview" src="../images/<?= $profilePic ?>" style="margin: 0px; height: 100px; width: 100px; border-radius: 50%; object-fit: cover;">
+					<img id="profilePreview" src="../images/profilePic/<?= $profilePic ?>" style="margin: 0px; height: 100px; width: 100px; border-radius: 50%; object-fit: cover;">
 					<br><span class="editPencil">&#9998;</span>
 					Profile Picture
 				</label>

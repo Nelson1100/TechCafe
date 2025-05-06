@@ -56,7 +56,7 @@ if (isset($_SESSION['Role']) && $_SESSION['Role'] === 'Admin') {
                     ?>
                             <a href="#" id="cartLink"><img src="/images/cart.png" alt="Cart"></a>
                             <a href="../userProfile.php">
-                                <img src="<?= $user['ProfilePic'] ? '/images/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%; object-fit: cover;">
+                                <img src="<?= $user['ProfilePic'] ? '/images/profilePic/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%; object-fit: cover;">
                             </a>
                     <?php
                         } else {
