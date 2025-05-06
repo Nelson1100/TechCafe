@@ -33,7 +33,7 @@ if ($_SESSION['Role'] !== 'Admin') {
                 if (isset($_SESSION['Email'])) {
                 ?>
                     <a href="../userProfile.php">
-                        <img src="<?= $user['ProfilePic'] ? '/images/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%;">
+                        <img src="<?= $user['ProfilePic'] ? '/images/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%; object-fit: cover;">
                     </a>
                 <?php
                 } else {
