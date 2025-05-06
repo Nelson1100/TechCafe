@@ -1,46 +1,65 @@
 const buttonIds = Array.from(document.querySelectorAll('.spec-btn')).map(btn => btn.id);    
 
+const qtyInput = document.querySelector('.product-qty');
+const minusBtn = document.querySelector('.qty-count--minus');
+const addBtn = document.querySelector('.qty-count--add');
+
+let min = 0;
+let max = 0;
+
+function updateButtons() {
+    const value = parseInt(qtyInput.value);
+    minusBtn.disabled = value <= min;
+    addBtn.disabled = value >= max;
+}
+
+minusBtn.addEventListener('click', () => {
+    let current = parseInt(qtyInput.value);
+    if (current > min) {
+        qtyInput.value = current - 1;
+        updateButtons();
+    }
+});
+
+addBtn.addEventListener('click', () => {
+    let current = parseInt(qtyInput.value);
+    if (current < max) {
+        qtyInput.value = current + 1;
+        updateButtons();
+    }
+});
+
+qtyInput.addEventListener('input', () => {
+    let val = parseInt(qtyInput.value);
+    if (isNaN(val) || val < min) {
+        qtyInput.value = min;
+    } else if (val > max) {
+        qtyInput.value = max;
+    }
+    updateButtons();
+});
+
+document.querySelectorAll('.spec-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        document.getElementById('selectedSpecID').value = this.dataset.id;
+
+        max = parseInt(this.dataset.stock);
+        min = max > 0 ? 1 : 0;
+
+        qtyInput.max = max;
+        qtyInput.min = min;
+        qtyInput.value = min;
+
+        qtyInput.disabled = max === 0;
+        minusBtn.disabled = max === 0;
+        addBtn.disabled = max === 0;
+
+        updateButtons(); // update button state
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const Buttons = document.querySelectorAll(".spec-btn");
-    const qtyInput = document.querySelector('.product-qty');
-    const minusBtn = document.querySelector('.qty-count--minus');
-    const addBtn = document.querySelector('.qty-count--add');
-    const min = parseInt(qtyInput.min);
-    const max = parseInt(qtyInput.max);
-
-    function updateButtons() {
-        const value = parseInt(qtyInput.value);
-        minusBtn.disabled = value <= min;
-        addBtn.disabled = value >= max;
-    }
-
-    minusBtn.addEventListener('click', () => {
-        let current = parseInt(qtyInput.value);
-        if (current > min) {
-            qtyInput.value = current - 1;
-            updateButtons();
-        }
-    });
-
-    addBtn.addEventListener('click', () => {
-        let current = parseInt(qtyInput.value);
-        if (current < max) {
-            qtyInput.value = current + 1;
-            updateButtons();
-        }
-    });
-
-    qtyInput.addEventListener('input', () => {
-        let val = parseInt(qtyInput.value);
-        if (isNaN(val) || val < min) {
-            qtyInput.value = min;
-        } else if (val > max) {
-            qtyInput.value = max;
-        }
-        updateButtons();
-    });
-
-    updateButtons(); // initialize button states
 
     Buttons.forEach(button => {
         button.addEventListener("click", () => {
@@ -50,12 +69,30 @@ document.addEventListener("DOMContentLoaded", function () {
             const descr = button.dataset.descr;
             const photo = button.dataset.photo;
             const product = button.dataset.product;
+            const stock = button.dataset.stock;
+            const qtyInput = document.querySelector(".product-qty");
 
             document.getElementById("package").src = "/images/product/" + photo;
             document.querySelector(".text h1").innerText = product;
             document.querySelector(".text h2").innerText = name;
             document.querySelector(".text p:nth-of-type(1)").innerHTML = `<b>Price:</b> RM ${price}`;
             document.querySelector(".text p:nth-of-type(2)").innerText = `Description: ${descr}`;
+            document.querySelector(".stock").innerText = `Stock: ${stock}`;
+
+            const addToCartBtn = document.querySelector(".cartButton");
+            if (stock > 0) {
+                addToCartBtn.disabled = false;
+                addToCartBtn.style.cursor = "pointer";
+                addToCartBtn.textContent = "Add to Cart";
+            } else {
+                addToCartBtn.disabled = true;
+                addToCartBtn.style.cursor = "not-allowed";
+                addToCartBtn.textContent = "Out of Stock";
+            }
+
+            // Reset quantity to 1 when changing specs (optional)
+            qtyInput.value = 1;
+            
             buttonColor(id);
             showCart();
         });

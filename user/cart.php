@@ -71,15 +71,18 @@
                                     $totalQty += $qty;
                     ?>
                     <form method="POST" class="cart-item">
+                        <input type="hidden" name="targetSpecID" value="<?= $specID ?>">
+
                         <button class="far fa-trash-alt" id="delete" name="deleteProduct" value="<?= $specID ?>" type="submit"></button>
+
                         <img src="../images/product/<?= $product['ProductPhoto'] ?>" alt="Product Image">
                         <div class="item-details">
                             <h3 style="margin-top: 10px;"><?= $product['ProductName'] ?></h3>
                             <p>Specification: <?= $product['Specification'] ?></p>
                             <p>Price: RM <?= $product['Price'] ?> x <?= $qty ?> = RM <?= $price ?></p>
                             <div class="qty-wrapper">
-                                <button type="submit" name="deductQuantity" value="<?= $specID ?>">-</button>
-                                <span><?= $qty ?></span>
+                                <button type="submit" name="deductQuantity" value="<?= $specID ?>">−</button>
+                                <input class="product-qty" type="number" name="product-qty" value="<?= $qty ?>" min="0">
                                 <button type="submit" name="addQuantity" value="<?= $specID ?>">+</button>
                             </div>
                         </div>

@@ -138,7 +138,7 @@ if (isset($_SESSION['Email'])) {
 if (isset($_GET['ProductID'])) {
 	$ProductID = urldecode($_GET['ProductID']);
 
-	$stm = $_db->prepare("SELECT SpecID, Specification, Price, Descr, ProductPhoto FROM specification WHERE ProductID = ?");
+	$stm = $_db->prepare("SELECT * FROM specification WHERE ProductID = ?");
 	$stm->execute([$ProductID]);
 	$specifications = $stm->fetchAll();
 }
@@ -300,65 +300,77 @@ if (is_post()) {
 			echo "<script>alert('Please login to continue adding your cart.');
 			window.location='$previousPage'</script>";
 		}	
-	} else if (isset($_POST['addQuantity']) || isset($_POST['deductQuantity'])) {
-		$targetSpecID = isset($_POST['addQuantity']) ? $_POST['addQuantity'] : $_POST['deductQuantity'];
-		$operation = isset($_POST['addQuantity']) ? 'add' : 'deduct';
-
-		// Get current cart
+	} else if (
+		isset($_POST['addQuantity']) ||
+		isset($_POST['deductQuantity']) ||
+		isset($_POST['product-qty']) ||
+		isset($_POST['deleteProduct'])
+	) {
 		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
 		$stm->execute([$_SESSION['Email']]);
 		$cartData = $stm->fetch();
 		$specIDs = explode(',', $cartData['ItemsAdded']);
 		$quantities = explode(',', $cartData['Quantity']);
-
-		for ($i = 0; $i < count($specIDs); $i++) {
-			if ($specIDs[$i] == $targetSpecID) {
-				if ($operation == 'add') {
-					$quantities[$i]++;
-				} elseif ($operation == 'deduct' && $quantities[$i] > 1) {
-					$quantities[$i]--;
+	
+		$targetSpecID = $_POST['targetSpecID'] ?? $_POST['addQuantity'] ?? $_POST['deductQuantity'] ?? $_POST['updateQty'] ?? $_POST['deleteProduct'];
+		
+		if (isset($_POST['deleteProduct']) && !(isset($_POST['addQuantity']) || isset($_POST['deductQuantity']) || isset($_POST['product-qty']))) {
+			for ($i = 0; $i < count($specIDs); $i++) {
+				if ($specIDs[$i] == $targetSpecID) {
+					array_splice($specIDs, $i, 1);
+					array_splice($quantities, $i, 1);
+					break;
 				}
-				break; // Stop loop once the targetSpecID is found
 			}
-		}
-
-		// Debugging: Check $quantities and $newQuantity
-		$newQuantity = implode(',', $quantities);
-
-		// Update DB with new quantity
-		$stm = $_db->prepare("UPDATE cart SET Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
-		$stm->execute([$newQuantity, $_SESSION['Email']]);
-
-		// Refresh page
-		echo "<script>window.location.href = window.location.href;</script>";
-		exit;
-	} else if (isset($_POST['deleteProduct'])) {
-		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
-		$stm->execute([$_SESSION['Email']]);
-		$cartItems = $stm->fetch();
-		$itemArray = explode(',', $cartItems['ItemsAdded']);
-		$qtyArray = explode(',', $cartItems['Quantity']);
-		$deleteID = $_POST['deleteProduct']; // make sure you get the ID being deleted
-	
-		$index = array_search($deleteID, $itemArray);
-		if ($index !== false) {
-			array_splice($itemArray, $index, 1);
-			array_splice($qtyArray, $index, 1);
-	
-			$updatedItems = implode(',', $itemArray);
-			$updatedQty = implode(',', $qtyArray);
-	
-			$update = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
-			$update->execute([$updatedItems, $updatedQty, $_SESSION['Email']]);
-	
-			// ✅ Check if updatedItems is empty
-			if (trim($updatedItems) !== '') {
-				echo "<script>alert('Item removed from cart.'); window.location='$previousPage';</script>";
+		} elseif (isset($_POST['product-qty']) && !(isset($_POST['addQuantity']) || isset($_POST['deductQuantity']))) {
+			$qty = (int) $_POST['product-qty'];
+			if ($qty > 0) {
+				for ($i = 0; $i < count($specIDs); $i++) {
+					if ($specIDs[$i] == $targetSpecID) {
+						$quantities[$i] = $qty;
+						break;
+					}
+				}
+			} elseif ($qty == 0) {
+				for ($i = 0; $i < count($specIDs); $i++) {
+					if ($specIDs[$i] == $targetSpecID) {
+						array_splice($specIDs, $i, 1);
+						array_splice($quantities, $i, 1);
+						break;
+					}
+				}
 			} else {
-				echo "<script>alert('Item removed from cart.'); window.location='home.php';</script>";
+				echo "<script>alert('Quantity must be a positive number.'); window.location.href = window.location.href;</script>";
+				exit;
 			}
-			exit;
+		} elseif (isset($_POST['addQuantity']) || isset($_POST['deductQuantity'])) {
+			$operation = isset($_POST['addQuantity']) ? 'add' : 'deduct';
+	
+			for ($i = 0; $i < count($specIDs); $i++) {
+				if ($specIDs[$i] == $targetSpecID) {
+					if ($operation == 'add') {
+						$quantities[$i]++;
+					} elseif ($operation == 'deduct' && $quantities[$i] > 1) {
+						$quantities[$i]--;
+					}
+					break;
+				}
+			}
 		}
+	
+		// Update the cart
+		$newItems = implode(',', $specIDs);
+		$newQuantity = implode(',', $quantities);
+	
+		$stm = $_db->prepare("UPDATE cart SET ItemsAdded = ?, Quantity = ? WHERE Email = ? AND OrderStatus = 'InCart'");
+		$stm->execute([$newItems, $newQuantity, $_SESSION['Email']]);
+	
+		if (count($specIDs) == 0) {
+			echo "<script>alert('Cart is empty. Redirecting...'); window.location='home.php';</script>";
+		} else {
+			echo "<script>window.location.href = window.location.href;</script>";
+		}
+		exit;
 	} else if (isset($_POST['paid'])){
 		$stm = $_db->prepare("UPDATE cart SET OrderStatus = 'Purchased' WHERE Email = ?");
 		$stm->execute([$_SESSION['Email']]);
