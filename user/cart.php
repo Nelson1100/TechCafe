@@ -65,7 +65,7 @@
                                     $stmt = $_db->prepare("SELECT s.Specification, s.Price, s.ProductPhoto, p.ProductName FROM specification s JOIN product p ON s.ProductID = p.ProductID WHERE s.SpecID = ?");
                                     $stmt->execute([$specID]);
                                     $product = $stmt->fetch();
-    
+
                                     $price = $product['Price'] * $qty;
                                     $subtotal += $price;
                                     $totalQty += $qty;
@@ -73,7 +73,7 @@
                     <form method="POST" class="cart-item">
                         <input type="hidden" name="targetSpecID" value="<?= $specID ?>">
 
-                        <button class="far fa-trash-alt" id="delete" name="deleteProduct" value="<?= $specID ?>" type="submit"></button>
+                        <button type="submit" name="deleteProduct" value="<?= $specID ?>" class="far fa-trash-alt" id="delete"></button>
 
                         <img src="../images/product/<?= $product['ProductPhoto'] ?>" alt="Product Image">
                         <div class="item-details">
@@ -82,7 +82,8 @@
                             <p>Price: RM <?= $product['Price'] ?> x <?= $qty ?> = RM <?= $price ?></p>
                             <div class="qty-wrapper">
                                 <button type="submit" name="deductQuantity" value="<?= $specID ?>">−</button>
-                                <input class="product-qty" type="number" name="product-qty" value="<?= $qty ?>" min="0">
+                                <button type="submit" name="product-qty-submit" value="<?= $specID ?>" style="display: none;"></button>
+                                <input class="product-qty" type="number" name="product-qty" value="<?= $qty ?>" min="0" onchange="this.form.submit();" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); this.form.submit(); }">
                                 <button type="submit" name="addQuantity" value="<?= $specID ?>">+</button>
                             </div>
                         </div>
@@ -105,24 +106,24 @@
                     </form>
                 </div>
                 <div class="details-box">
-                    <form id="checkoutForm">
-                        <h2>Contact Information</h2>
-                        <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" value="<?= $_SESSION['UserFullName'] ?>" placeholder="TechCafe" maxlength="100" required>
+                <form id="checkoutForm">
+                    <h2>Contact Information</h2>
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" value="<?= $_SESSION['UserFullName'] ?>" placeholder="TechCafe" maxlength="100" required>
 
-                        <label for="address">Email Address</label>
-                        <input type="text" id="address" value="<?= $_SESSION['Email'] ?>" placeholder="techcafe@gmail.com" maxlength="40" required>
+                    <label for="email">Email Address</label>
+                    <input type="text" id="email" value="<?= $_SESSION['Email'] ?>" placeholder="techcafe@gmail.com" maxlength="40" required>
 
-                        <label for="phone">Phone Number</label>
-                        <input type="text" id="phone" value="<?= $_SESSION['PhoneNo'] ?>" placeholder="01234567890" maxlength="11" required>
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" value="<?= $_SESSION['PhoneNo'] ?>" placeholder="01234567890" maxlength="11" required>
 
-                        <h2>Shipping Details</h2>
+                    <h2>Shipping Details</h2>
 
-                        <label for="address">Shipping Address</label>
-                        <input type="text" id="address" value="<?= $_SESSION['Address'] ?>" placeholder="Shipping Address" maxlength="100" required>
+                    <label for="shippingAddress">Shipping Address</label>
+                    <input type="text" id="shippingAddress" value="<?= $_SESSION['Address'] ?>" placeholder="Shipping Address" maxlength="100" required>
 
-                        <button type="button" id="pay-btn" class="pay-btn">Continue to Payment</button>
-                    </form>
+                    <button type="button" id="pay-btn" class="pay-btn">Continue to Payment</button>
+                </form>
                 </div>
                 <div class="payment-box">
                     <form id="paymentForm" method="POST" action="../base.php">
@@ -159,37 +160,44 @@
         </body>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                const checkout = document.querySelector('.checkout-btn');
-                const detailsBox = document.querySelector('.details-box');
-                const cartContainer = document.querySelector('.cart-container');
-                const backBtn = document.getElementById('cartBack');
-                const orderSum = document.getElementById('cartSummary');
-                const paymentBox = document.querySelector('.payment-box');
-                const payBtn = document.getElementById('pay-btn');
-                const form = document.getElementById("paymentForm");
+            const checkout = document.querySelector('.checkout-btn');
+            const detailsBox = document.querySelector('.details-box');
+            const cartContainer = document.querySelector('.cart-container');
+            const backBtn = document.getElementById('cartBack');
+            const orderSum = document.getElementById('cartSummary');
+            const paymentBox = document.querySelector('.payment-box');
+            const payBtn = document.getElementById('pay-btn');
+            const form = document.getElementById("paymentForm");
+            const addressInput = document.getElementById("shippingAddress"); // Updated to unique ID
 
-                checkout.addEventListener("click", () => {
-                    detailsBox.classList.add('translated');
-                    document.body.classList.add('checkout-mode');
-                    document.body.classList.remove('checkout-mode-revert');
-                    cartContainer.classList.add('translated');
-                    backBtn.style.opacity = 1;
-                    orderSum.style.opacity = 1;
-                });
+            checkout.addEventListener("click", () => {
+                detailsBox.classList.add('translated');
+                document.body.classList.add('checkout-mode');
+                document.body.classList.remove('checkout-mode-revert');
+                cartContainer.classList.add('translated');
+                backBtn.style.opacity = 1;
+                orderSum.style.opacity = 1;
+            });
 
-                backBtn.addEventListener("click", () => {
-                    detailsBox.classList.remove('translated');
-                    document.body.classList.remove('checkout-mode');
-                    document.body.classList.add('checkout-mode-revert');
-                    cartContainer.classList.remove('translated');
-                    paymentBox.classList.remove('translated');
-                    backBtn.style.opacity = 0;
-                    orderSum.style.opacity = 0;
-                });
+            backBtn.addEventListener("click", () => {
+                detailsBox.classList.remove('translated');
+                document.body.classList.remove('checkout-mode');
+                document.body.classList.add('checkout-mode-revert');
+                cartContainer.classList.remove('translated');
+                paymentBox.classList.remove('translated');
+                backBtn.style.opacity = 0;
+                orderSum.style.opacity = 0;
+            });
 
-                payBtn.addEventListener("click", () => {
+            payBtn.addEventListener("click", () => {
+                // Check if the shipping address is not empty
+                if (addressInput.value.trim() !== "") {
+                    // Add class to trigger animation/transition for the payment box
                     paymentBox.classList.add('translated');
-                });
+                } else {
+                    alert("Please enter a shipping address.");
+                }
+            });
 
                 form.addEventListener("submit", function (e) {
                     // Check if the form is valid
