@@ -144,7 +144,10 @@ foreach ($all_orders as $order) {
                     <td style="text-align: center;">
                         <button data-get="user_update.php?Email=<?= $u['Email'] ?>" class="admin-btn btn-update">Update</button>
                         <button data-confirm="Confirm Delete Record?" data-post="user_delete.php?Email=<?= $u['Email'] ?>" class="admin-btn btn-delete">Delete</button>
-                        <img src="../images/profilePic/<?= htmlspecialchars($u['ProfilePic']) ?? 'user.png' ?>" alt="Profile Picture" class="popup-photo popup" width="150" onerror="this.src='../images/user.png'">
+                        <?php
+                        $profilePic = !empty($u['ProfilePic']) ? '../images/profilePic/' . htmlspecialchars($u['ProfilePic']) : '../images/user.png';
+                        ?>
+                        <img src="<?= $profilePic ?>" alt="Profile Picture" class="popup-photo popup" width="150">
                     </td>
                 </tr>
                 <!-- Order history container -->
