@@ -306,15 +306,37 @@ if (is_post()) {
 		isset($_POST['product-qty']) ||
 		isset($_POST['deleteProduct'])
 	) {
+		$targetSpecID = $_POST['targetSpecID'] 
+		?? $_POST['addQuantity'] 
+		?? $_POST['deductQuantity'] 
+		?? $_POST['deleteProduct'] 
+		?? $_POST['product-qty-submit'] 
+		?? null;
+
+		if (!$targetSpecID) {
+			echo "<script>alert('Product identifier missing.'); window.location.href = window.location.href;</script>";
+			exit;
+		}
+	
 		$stm = $_db->prepare("SELECT * FROM cart WHERE Email = ? AND OrderStatus = 'InCart'");
 		$stm->execute([$_SESSION['Email']]);
 		$cartData = $stm->fetch();
+	
 		$specIDs = explode(',', $cartData['ItemsAdded']);
 		$quantities = explode(',', $cartData['Quantity']);
 	
-		$targetSpecID = $_POST['targetSpecID'] ?? $_POST['addQuantity'] ?? $_POST['deductQuantity'] ?? $_POST['updateQty'] ?? $_POST['deleteProduct'];
-		
-		if (isset($_POST['deleteProduct']) && !(isset($_POST['addQuantity']) || isset($_POST['deductQuantity']) || isset($_POST['product-qty']))) {
+		$stm = $_db->prepare("SELECT InventoryLevel FROM specification WHERE SpecID = ?");
+		$stm->execute([$targetSpecID]);
+		$stock = $stm->fetch();
+	
+		if (!$stock) {
+			echo "<script>alert('Product not found in inventory.'); window.location.href = window.location.href;</script>";
+			exit;
+		}
+	
+		$stockQty = (int)$stock['InventoryLevel'];
+	
+		if (isset($_POST['deleteProduct'])) {
 			for ($i = 0; $i < count($specIDs); $i++) {
 				if ($specIDs[$i] == $targetSpecID) {
 					array_splice($specIDs, $i, 1);
@@ -322,41 +344,58 @@ if (is_post()) {
 					break;
 				}
 			}
-		} elseif (isset($_POST['product-qty']) && !(isset($_POST['addQuantity']) || isset($_POST['deductQuantity']))) {
+		} else if (isset($_POST['product-qty'])) {
 			$qty = (int) $_POST['product-qty'];
-			if ($qty > 0) {
+			
+			if (isset($_POST['addQuantity']) || isset($_POST['deductQuantity'])) {
+				$operation = isset($_POST['addQuantity']) ? 'add' : 'deduct';
+		
 				for ($i = 0; $i < count($specIDs); $i++) {
 					if ($specIDs[$i] == $targetSpecID) {
-						$quantities[$i] = $qty;
+						if ($operation == 'add') {
+							if ($quantities[$i] < $stockQty) {
+								$quantities[$i]++;
+							} else {
+								echo "<script>alert('Not enough stock.'); window.location.href = window.location.href;</script>";
+								exit;
+							}
+						} elseif ($operation == 'deduct' && $quantities[$i] > 1) {
+							$quantities[$i]--;
+						}
 						break;
 					}
 				}
-			} elseif ($qty == 0) {
-				for ($i = 0; $i < count($specIDs); $i++) {
-					if ($specIDs[$i] == $targetSpecID) {
-						array_splice($specIDs, $i, 1);
-						array_splice($quantities, $i, 1);
-						break;
+			} else if (!(isset($_POST['addQuantity']) || isset($_POST['deductQuantity']))) {
+				if ($qty > 0) {
+					if ($qty > $stockQty) {
+						echo "<script>alert('Not enough stock...'); window.location.href = window.location.href;</script>";
+						exit;
 					}
+					for ($i = 0; $i < count($specIDs); $i++) {
+						if ($specIDs[$i] == $targetSpecID) {
+							$quantities[$i] = $qty;
+							break;
+						}
+					}
+				} else if ($qty == 0) {
+					for ($i = 0; $i < count($specIDs); $i++) {
+						if ($specIDs[$i] == $targetSpecID) {
+							array_splice($specIDs, $i, 1);
+							array_splice($quantities, $i, 1);
+							break;
+						}
+					}
+				} else {
+					echo "<script>alert('Quantity must be a positive number.'); window.location.href = window.location.href;</script>";
+					exit;
 				}
 			} else {
-				echo "<script>alert('Quantity must be a positive number.'); window.location.href = window.location.href;</script>";
-				exit;
-			}
-		} elseif (isset($_POST['addQuantity']) || isset($_POST['deductQuantity'])) {
-			$operation = isset($_POST['addQuantity']) ? 'add' : 'deduct';
-	
-			for ($i = 0; $i < count($specIDs); $i++) {
-				if ($specIDs[$i] == $targetSpecID) {
-					if ($operation == 'add') {
-						$quantities[$i]++;
-					} elseif ($operation == 'deduct' && $quantities[$i] > 1) {
-						$quantities[$i]--;
-					}
-					break;
+				if ($qty > $stockQty) {
+					echo "<script>alert('Not enough stock...'); window.location.href = window.location.href;</script>";
+					exit;
 				}
-			}
-		}
+			}			
+		} 
 	
 		// Update the cart
 		$newItems = implode(',', $specIDs);
@@ -371,12 +410,45 @@ if (is_post()) {
 			echo "<script>window.location.href = window.location.href;</script>";
 		}
 		exit;
-	} else if (isset($_POST['paid'])){
-		$stm = $_db->prepare("UPDATE cart SET OrderStatus = 'Purchased' WHERE Email = ?");
+	} else if (isset($_POST['paid'])) {
+		// Step 1: Select the cart data first
+		$stm = $_db->prepare("SELECT ItemsAdded, Quantity FROM cart WHERE Email = ? AND OrderStatus != 'Purchased'");
 		$stm->execute([$_SESSION['Email']]);
+		$cartData = $stm->fetch();
+	
+		if ($cartData) {
+			// Step 2: Mark as purchased
+			$stm = $_db->prepare("UPDATE cart SET OrderStatus = 'Purchased' WHERE Email = ?");
+			$stm->execute([$_SESSION['Email']]);
+	
+			// Step 3: Process inventory deduction
+			$specIDs = explode(',', $cartData['ItemsAdded']);
+			$quantities = explode(',', $cartData['Quantity']);
+	
+			for ($i = 0; $i < count($specIDs); $i++) {
+				$specID = $specIDs[$i];
+				$qtyPurchased = (int) $quantities[$i];
+	
+				// Fetch current inventory
+				$stm = $_db->prepare("SELECT InventoryLevel FROM specification WHERE SpecID = ?");
+				$stm->execute([$specID]);
+				$stock = $stm->fetch();
+	
+				if ($stock) {
+					$currentStock = (int) $stock['InventoryLevel'];
+					$newStock = $currentStock - $qtyPurchased;
+	
+					// Update inventory
+					$stm = $_db->prepare("UPDATE specification SET InventoryLevel = ? WHERE SpecID = ?");
+					$stm->execute([$newStock, $specID]);
+				}
+			}
+		}
+	
+		// Final confirmation
 		echo "<script>alert('Payment Successful! Thank you for your purchase. Your order has been received and is now being processed.');
-        window.location.href = '/user/home.php';</script>";
-	}
+		window.location.href = '/user/home.php';</script>";
+	}	
 } else if (is_get()) {
 	$category = $_GET['category'] ?? 'All';
 	$search = $_GET['ProductName'] ?? '';
