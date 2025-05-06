@@ -36,11 +36,6 @@ if ($_SESSION['Role'] !== 'Admin') {
                         <img src="<?= $user['ProfilePic'] ? '/images/profilePic/' . $user['ProfilePic'] : '/images/user.png' ?>" alt="User Profile" style="border-radius: 50%; object-fit: cover;">
                     </a>
                 <?php
-                } else {
-                ?>
-                    <img src="/images/user.png" alt="User Profile" style="border-radius: 50%;">
-                    </a>
-                <?php
                 }
                 ?>
             </div>

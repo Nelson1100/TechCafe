@@ -168,7 +168,7 @@
                 const paymentBox = document.querySelector('.payment-box');
                 const payBtn = document.getElementById('pay-btn');
                 const form = document.getElementById("paymentForm");
-                const addressInput = document.getElementById("shippingAddress"); // Updated to unique ID
+                const addressInput = document.getElementById("shippingAddress");
 
                 checkout.addEventListener("click", () => {
                     detailsBox.classList.add('translated');
@@ -190,9 +190,7 @@
                 });
 
                 payBtn.addEventListener("click", () => {
-                    // Check if the shipping address is not empty
-                    if (addressInput.value.trim() !== "") {
-                        // Add class to trigger animation/transition for the payment box
+                    if (addressInput.value.trim() !== "" && addressInput.value.trim() !== "-") {
                         paymentBox.classList.add('translated');
                     } else {
                         alert("Please enter a shipping address.");
