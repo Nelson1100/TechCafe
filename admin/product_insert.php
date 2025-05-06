@@ -84,9 +84,9 @@ if (is_post()) {
             <label for="Category">Category</label>
             <select id="Category" name="Category">
                 <option value="">- Select One -</option>
-                <option value="Computer">Computer</option>
-                <option value="Keyboard">Keyboard</option>
-                <option value="Accessories">Accessories</option>
+                <option value="Computer" <?= old('Category') == 'Computer' ? 'selected' : '' ?>>Computer</option>
+                <option value="Keyboard" <?= old('Category') == 'Keyboard' ? 'selected' : '' ?>>Keyboard</option>
+                <option value="Accessories" <?= old('Category') == 'Accessories' ? 'selected' : '' ?>>Accessories</option>
             </select>
             <?= err('Category') ?>
 

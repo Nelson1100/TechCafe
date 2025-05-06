@@ -1154,6 +1154,11 @@ select {
     font-family: Lexend, sans-serif;
 }
 
+.form-row textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
 .appointment-form button {
     background-color: #333;
     color: #fff;

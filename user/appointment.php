@@ -50,9 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_err['datetime'] = 'Date and time are required.';
     } else {
         $selected = strtotime("$appointment_date $appointment_time");
+        $time_only = strtotime($appointment_time);
+        $opening_time = strtotime('09:00:00');
+        $closing_time = strtotime('20:00:00');
 
         if ($selected < time()) {
             $_err['datetime'] = 'Appointment must be in the future.';
+        } elseif ($time_only < $opening_time || $time_only > $closing_time) {
+            $_err['datetime'] = 'Appointments must be between 9:00 AM and 8:00 PM.';
         }
     }
 
@@ -104,6 +109,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tech Café</title>
+    <style>
+        /* Add some additional styling for error placement */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .form-row label {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 3px;
+        }
+
+        .err {
+            color: red;
+            font-size: 0.85em;
+            margin-top: 3px;
+        }
+
+        /* Adjust layout for side-by-side inputs */
+        .input-group-half {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Style for the date/time inputs */
+        .datetime-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .datetime-group .input-group {
+            flex: 1;
+            min-width: 150px;
+        }
+    </style>
 </head>
 
 <body>
@@ -112,73 +163,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2>Book Your Appointment at Tech Cafe</h2>
 
             <div class="form-row">
-                <label for="first_name">First Name:</label>
-                <input type="text" name="first_name" id="first_name" required style="flex: 1;" value="<?= htmlentities($first_name ?? '') ?>"
-                    pattern="[A-Za-z\s\-']{1,50}" 
-                    title="Only letters, spaces, hyphens, and apostrophes allowed. Max 50 chars">
-                <? err('first_name') ?>
+                <div class="input-group input-group-half">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" name="first_name" id="first_name" required
+                        value="<?= old('first_name') ?>"
+                        pattern="[A-Za-z\s\-']{1,50}"
+                        title="Only letters, spaces, hyphens, and apostrophes allowed. Max 50 chars">
+                    <?php err('first_name') ?>
+                </div>
 
-                <label for="last_name">Last Name:</label>
-                <input type="text" name="last_name" id="last_name" required style="flex: 1;" value="<?= htmlentities($last_name ?? '') ?>"
-                    pattern="[A-Za-z\s\-']{1,50}" 
-                    title="Only letters, spaces, hyphens, and apostrophes allowed. Max 50 chars">
-                <? err('last_name') ?>
+                <div class="input-group input-group-half">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" name="last_name" id="last_name" required
+                        value="<?= old('last_name') ?>"
+                        pattern="[A-Za-z\s\-']{1,50}"
+                        title="Only letters, spaces, hyphens, and apostrophes allowed. Max 50 chars">
+                    <?php err('last_name') ?>
+                </div>
             </div>
 
             <div class="form-row">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" name="phone" id="phone" required style="flex: 1;" value="<?= htmlentities($phone ?? '') ?>"
-                    pattern="^01[0,1,2,3,4,6-9][0-9]{7,8}$"
-                    title="Enter a valid Malaysian phone number (excluding 015)">
-                <?= isset($_err['phone']) ? $_err['phone'] : '' ?>
-                <? err('phone') ?>
+                <div class="input-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" name="phone" id="phone" required
+                        value="<?= old('phone') ?>"
+                        pattern="^01[0,1,2,3,4,6-9][0-9]{7,8}$"
+                        title="Enter a valid Malaysian phone number (excluding 015)">
+                    <?php err('phone') ?>
+                </div>
             </div>
 
             <div class="form-row">
-                <label for="email">Email (Optional):</label>
-                <input type="email" name="email" id="email" style="flex: 1;" value="<?= htmlentities($email ?? '') ?>">
-                <? err('email') ?>
+                <div class="input-group">
+                    <label for="email">Email (Optional):</label>
+                    <input type="email" name="email" id="email"
+                        value="<?= old('email') ?>">
+                    <?php err('email') ?>
+                </div>
             </div>
 
             <div class="form-row">
-                <label for="service">Please Choose Your Service:</label>
-                <select name="service" id="service" required style="flex: 1;">
+                <div class="input-group">
+                    <label for="service">Please Choose Your Service:</label>
+                    <select name="service" id="service" required>
                     <option value="">- Select One -</option>
-                    <option value="Coworking Space">Co-working Space</option>
-                    <option value="Keyboard Disassembly">Keyboard Disassembly Service</option>
-                    <option value="Keyboard Cleaning">Keyboard Cleaning Service</option>
-                    <option value="Keyboardd Soldering">Whole Keyboard Desoldering/Soldering Service</option>
-                    <option value="Keyboard Build">Keyboard Building Service (Hotswap)</option>
-                    <option value="Switch Fix">Repairing Switch Desoldering/Soldering Service</option>
-                    <option value="Turbocharge">Turbocharge Performance Service</option>
-                    <option value="Virus Removal">Conquer Virus Service</option>
-                    <option value="Data Recovery">Rescue Lost Data Service</option>
-                    <option value="Glitch Fix">Fix Any Glitch Service</option>
-                    <option value="PC Build">PC Building Service</option>
-                </select>
-                <? err('service') ?>
+                    <option value="Coworking Space" <?= old('service') == 'Coworking Space' ? 'selected' : '' ?>>Co-working Space</option>
+                    <option value="Keyboard Disassembly" <?= old('service') == 'Keyboard Disassembly' ? 'selected' : '' ?>>Keyboard Disassembly Service</option>
+                    <option value="Keyboard Cleaning" <?= old('service') == 'Keyboard Cleaning' ? 'selected' : '' ?>>Keyboard Cleaning Service</option>
+                    <option value="Keyboardd Soldering" <?= old('service') == 'Keyboardd Soldering' ? 'selected' : '' ?>>Whole Keyboard Desoldering/Soldering Service</option>
+                    <option value="Keyboard Build" <?= old('service') == 'Keyboard Build' ? 'selected' : '' ?>>Keyboard Building Service (Hotswap)</option>
+                    <option value="Switch Fix" <?= old('service') == 'Switch Fix' ? 'selected' : '' ?>>Repairing Switch Desoldering/Soldering Service</option>
+                    <option value="Turbocharge" <?= old('service') == 'Turbocharge' ? 'selected' : '' ?>>Turbocharge Performance Service</option>
+                    <option value="Virus Removal" <?= old('service') == 'Virus Removal' ? 'selected' : '' ?>>Conquer Virus Service</option>
+                    <option value="Data Recovery" <?= old('service') == 'Data Recovery' ? 'selected' : '' ?>>Rescue Lost Data Service</option>
+                    <option value="Glitch Fix" <?= old('service') == 'Glitch Fix' ? 'selected' : '' ?>>Fix Any Glitch Service</option>
+                    <option value="PC Build" <?= old('service') == 'PC Build' ? 'selected' : '' ?>>PC Building Service</option>
+                    </select>
+                    <?php err('service') ?>
+                </div>
             </div>
 
             <div class="form-row">
-                <label for="problem_description">Problem Description (Optional):</label>
-                <textarea name="problem_description" id="problem_description" style="resize: vertical; width: 76%; min-height: 80px;"></textarea>
+                <div class="input-group">
+                    <label for="problem_description">Problem Description (Optional):</label>
+                    <textarea name="problem_description" id="problem_description" style="resize: vertical; min-height: 80px;"><?= old('problem_description') ?></textarea>
+                </div>
             </div>
 
-            <div class="form-row">
-                <label for="appointment_date">Appointment Date:</label>
-                <input type="date" name="appointment_date" id="appointment_date" required style="flex: 1;" min="<?= $today ?>" value="<?= htmlentities($appointment_date ?? '') ?>">
+            <div class="form-row datetime-group">
+                <div class="input-group">
+                    <label for="appointment_date">Appointment Date:</label>
+                    <input type="date" name="appointment_date" id="appointment_date" required
+                        min="<?= $today ?>" value="<?= old('appointment_date') ?>">
+                </div>
 
-                <label for="appointment_time">Appointment Time:</label>
-                <input type="time" name="appointment_time" id="appointment_time" required style="flex: 1;" value="<?= htmlentities($appointment_time ?? '') ?>">
-                <? err('datetime') ?>
+                <div class="input-group">
+                    <label for="appointment_time">Appointment Time:</label>
+                    <input type="time" name="appointment_time" id="appointment_time" required
+                        min="09:00" max="20:00" step="1800" title="Appointments available between 9:00 AM and 8:00 PM" value="<?= old('appointment_time') ?>">
+                </div>
+            </div>
+            <div class="form-row">
+                <?php err('datetime') ?>
             </div>
 
             <button type="submit">Book Appointment</button>
         </form>
 
         <br>
-        <?php 
-        include '../foot.php'; 
+        <?php
+        include '../foot.php';
         ?>
     </main>
 
