@@ -26,6 +26,7 @@ if (is_post()) {
     $Specification = req('Specification');
     $Price = req('Price');
     $Descr = req('Descr');
+    $InventoryLevel = req('InventoryLevel');
     $f = get_file('ProductPhoto');
     $photo = $_SESSION['ProductPhoto'] ?? $default_photo;
 
@@ -48,6 +49,15 @@ if (is_post()) {
     // Descr Validation
     if ($Descr == '') {
         $_err['Descr'] = 'Required';
+    }
+
+    // InventoryLevel Validation
+    if ($InventoryLevel == '') {
+        $_err['InventoryLevel'] = 'Required';
+    } else if (!ctype_digit($InventoryLevel)) {
+        $_err['InventoryLevel'] = 'Must be a whole number';
+    } else if ((int)$InventoryLevel > 99999) {
+        $_err['InventoryLevel'] = 'Must between 0 - 99999';
     }
 
     // ProductPhoto Validation
@@ -75,10 +85,10 @@ if (is_post()) {
 
         $stm = $_db->prepare('
             UPDATE specification
-            SET Specification = ?, Price = ?, Descr = ?, ProductPhoto = ?
+            SET Specification = ?, Price = ?, Descr = ?, InventoryLevel = ?, ProductPhoto = ?
             WHERE SpecID = ?
         ');
-        $stm->execute([$Specification, $Price, $Descr, $photo, $SpecID]);
+        $stm->execute([$Specification, $Price, $Descr, $InventoryLevel, $photo, $SpecID]);
 
         temp('info', 'Specification record updated');
         redirect('product.php');
@@ -118,6 +128,10 @@ if (is_post()) {
             <label for="Descr">Description</label>
             <textarea id="Descr" name="Descr" rows="7" cols="30"><?= htmlentities($Descr) ?></textarea>
             <?= err('Descr') ?>
+
+            <label for="InventoryLevel">InventoryLevel</label>
+            <input type="number" id="InventoryLevel" name="InventoryLevel" value="<?= htmlentities($InventoryLevel) ?>" min="0" max="99999" step="1">
+            <?= err('InventoryLevel') ?>
 
             <label for="ProductPhoto">ProductPhoto</label>
             <label class="upload" tabindex="0">
