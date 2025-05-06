@@ -36,7 +36,8 @@
                                             data-price="'.$specification["Price"].'" 
                                             data-descr="'.$specification["Descr"].'" 
                                             data-photo="'.$specification["ProductPhoto"].'"
-                                            data-product="'.$product["ProductName"].'">
+                                            data-product="'.$product["ProductName"].'"
+                                            data-stock="'.$specification["InventoryLevel"].'">
                                             '.$specification["Specification"].'
                                             </button>';
                                         }
@@ -59,10 +60,13 @@
                                 <form id="addToCart" class="textbox" method="POST">
                                     <input type="hidden" name="selectedSpecID" id="selectedSpecID">
                                     <div style="display: flex; align-items: center; justify-content: center;">
-                                        <div class="qty-input">
-                                            <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
-                                            <input class="product-qty" type="number" name="product-qty" min="1" max="500" value="1">
-                                            <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+                                        <div>
+                                            <div class="qty-input">
+                                                <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
+                                                <input class="product-qty" type="number" name="product-qty">
+                                                <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+                                            </div>
+                                            <p class="stock" style="position: absolute; z-index: 999; text-align: center; margin: 10px 42px;"></p>
                                         </div>
                                         <button type="submit" class="cartButton" name="addCart">Add to Cart</button>
                                     </div>
@@ -76,14 +80,6 @@
             <?php
                 include '../foot.php'; 
             ?>
-
-            <script>
-                document.querySelectorAll('.spec-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        document.getElementById('selectedSpecID').value = this.dataset.id;
-                    });
-                });
-            </script>
         </body>
     </main>
 </html>
