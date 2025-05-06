@@ -6,7 +6,7 @@ session_start();
 if (isset($_SERVER['HTTP_REFERER']) &&
     $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/register.php" &&
     $_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/login.php" &&
-	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/user/userProfile.php" &&
+	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/userProfile.php" &&
 	$_SERVER['HTTP_REFERER'] != "http://localhost:8000/base.php") {
     
     $_SESSION['previousPage'] = $_SERVER['HTTP_REFERER']; // Store in session
@@ -227,7 +227,7 @@ if (is_post()) {
 			$phone == $currentUser['PhoneNo'] &&
 			$address == $currentUser['Address'] &&
 			$noImageUploaded) {
-			echo "<script>alert('No changes detected in your profile.'); window.location.href='/user/userProfile.php';</script>";
+			echo "<script>alert('No changes detected in your profile.'); window.location.href='/userProfile.php';</script>";
 			return;
 		} else {
 		// Update profile
@@ -254,7 +254,7 @@ if (is_post()) {
 					}
 				}
 			}
-			echo "<script>alert('Profile updated successfully.'); window.location.href='/user/userProfile.php';</script>";
+			echo "<script>alert('Profile updated successfully.'); window.location.href='/userProfile.php';</script>";
 		}
 	} else if (isset($_POST['addCart'])) {
 		$previousPage = $_SERVER['HTTP_REFERER'];
